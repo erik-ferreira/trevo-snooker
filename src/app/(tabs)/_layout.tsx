@@ -13,6 +13,9 @@ import {
   JetBrainsMono_400Regular,
   JetBrainsMono_700Bold,
 } from "@expo-google-fonts/jetbrains-mono"
+import { styled } from "nativewind"
+
+const TabStyled = styled(Tabs)
 
 export default function TabsRoutesLayout() {
   let [fontsLoaded, fontError] = useFonts({
@@ -29,7 +32,7 @@ export default function TabsRoutesLayout() {
   }
 
   return (
-    <Tabs screenOptions={{ headerShown: false }}>
+    <TabStyled tw="bg-emerald-500">
       <Tabs.Screen
         name="index"
         options={{
@@ -39,6 +42,6 @@ export default function TabsRoutesLayout() {
           ),
         }}
       />
-    </Tabs>
+    </TabStyled>
   )
 }
