@@ -1,5 +1,4 @@
 import { StatusBar } from "expo-status-bar"
-import { StyleSheet, Text, View } from "react-native"
 import {
   Rajdhani_400Regular,
   Rajdhani_700Bold,
@@ -14,9 +13,10 @@ import {
   JetBrainsMono_700Bold,
 } from "@expo-google-fonts/jetbrains-mono"
 import { ThemeProvider } from "styled-components/native"
+import { NavigationContainer } from "@react-navigation/native"
 
-import { Home } from "./src/pages/Home"
-import { defaultTheme } from "./src/theme/default"
+import { TabRoutes } from "@/routes/tab.routes"
+import { defaultTheme } from "@/theme/default"
 
 export default function App() {
   let [fontsLoaded, fontError] = useFonts({
@@ -34,8 +34,10 @@ export default function App() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Home />
-      <StatusBar style="auto" />
+      <NavigationContainer>
+        <TabRoutes />
+        <StatusBar style="auto" />
+      </NavigationContainer>
     </ThemeProvider>
   )
 }
