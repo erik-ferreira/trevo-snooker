@@ -13,8 +13,9 @@ import {
   JetBrainsMono_400Regular,
   JetBrainsMono_700Bold,
 } from "@expo-google-fonts/jetbrains-mono"
+import { ThemeProvider } from "styled-components/native"
 
-import { Label } from "./styles"
+import { Home } from "./src/pages/Home"
 
 export default function App() {
   let [fontsLoaded, fontError] = useFonts({
@@ -31,18 +32,11 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-      <Label>Open up App.tsx to start working on your app!</Label>
+    <ThemeProvider
+      theme={{ fonts: { orbi: { normal: "Orbitron_400Regular" } } }}
+    >
+      <Home />
       <StatusBar style="auto" />
-    </View>
+    </ThemeProvider>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-})
