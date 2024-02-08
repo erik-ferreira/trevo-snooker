@@ -19,6 +19,7 @@ export function TabRoutes() {
         tabBarStyle: {
           height: 72,
           backgroundColor: theme.colors.gray["900"],
+          borderTopWidth: 0,
         },
         tabBarActiveTintColor: theme.colors.blue["500"],
         tabBarInactiveTintColor: theme.colors.slate["400"],

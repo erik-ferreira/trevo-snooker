@@ -1,11 +1,15 @@
-import { Container, Label } from "./styles"
+import { Button } from "@/components/Button"
+
+import { Container, DateToday } from "./styles"
 
 interface HomeProps {}
 
 export function Home({ ...rest }: HomeProps) {
   return (
     <Container>
-      <Label>Home</Label>
+      <DateToday>07/02/2024</DateToday>
+
+      <Button />
     </Container>
   )
 }

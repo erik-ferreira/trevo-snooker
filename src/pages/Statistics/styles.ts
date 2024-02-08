@@ -4,6 +4,7 @@ export const Container = styled.SafeAreaView`
   flex: 1;
   align-items: center;
   justify-content: center;
+  background-color: ${(props) => props.theme.colors.page};
 `
 
 export const Label = styled.Text`
