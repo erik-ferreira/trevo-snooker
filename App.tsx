@@ -16,6 +16,7 @@ import {
 import { ThemeProvider } from "styled-components/native"
 
 import { Home } from "./src/pages/Home"
+import { defaultTheme } from "./src/theme/default"
 
 export default function App() {
   let [fontsLoaded, fontError] = useFonts({
@@ -32,9 +33,7 @@ export default function App() {
   }
 
   return (
-    <ThemeProvider
-      theme={{ fonts: { orbi: { normal: "Orbitron_400Regular" } } }}
-    >
+    <ThemeProvider theme={defaultTheme}>
       <Home />
       <StatusBar style="auto" />
     </ThemeProvider>
