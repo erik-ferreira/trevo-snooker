@@ -1,7 +1,9 @@
+import { View } from "react-native"
+
 import { Button } from "@/components/Button"
 import { PlayerOfTheMatch } from "@/components/PlayerOfTheMatch"
 
-import { Container, DateToday } from "./styles"
+import { Container, DateToday, ContentMatchesList } from "./styles"
 
 interface HomeProps {}
 
@@ -10,7 +12,10 @@ export function Home({ ...rest }: HomeProps) {
     <Container>
       <DateToday>07/02/2024</DateToday>
 
-      <PlayerOfTheMatch />
+      <ContentMatchesList>
+        <PlayerOfTheMatch />
+        <PlayerOfTheMatch variant="player-two" />
+      </ContentMatchesList>
 
       <Button label="Salvar" />
     </Container>

@@ -14,3 +14,9 @@ export const DateToday = styled.Text`
   font-family: ${(props) => props.theme.fonts.orbi.semiBold};
   font-size: 40px;
 `
+
+export const ContentMatchesList = styled.View`
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+`

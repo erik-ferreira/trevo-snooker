@@ -2,13 +2,22 @@ import { TouchableOpacityProps } from "react-native"
 
 import player from "@/assets/player.png"
 
-import { TouchableOpacityContainer, ImagePlayer, Box } from "./styles"
+import {
+  Box,
+  ImagePlayer,
+  TouchableOpacityContainer,
+  TouchableOpacityContainerProps,
+} from "./styles"
 
-interface PlayerOfTheMatchProps extends TouchableOpacityProps {}
+type PlayerOfTheMatchProps = TouchableOpacityProps &
+  TouchableOpacityContainerProps & {}
 
-export function PlayerOfTheMatch({ ...rest }: PlayerOfTheMatchProps) {
+export function PlayerOfTheMatch({
+  variant = "player-one",
+  ...rest
+}: PlayerOfTheMatchProps) {
   return (
-    <TouchableOpacityContainer activeOpacity={0.7} {...rest}>
+    <TouchableOpacityContainer activeOpacity={0.7} variant={variant} {...rest}>
       <ImagePlayer source={player} width={80} height={80} />
 
       <Box />
