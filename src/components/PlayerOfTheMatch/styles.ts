@@ -4,6 +4,10 @@ export interface TouchableOpacityContainerProps {
   variant?: "player-one" | "player-two"
 }
 
+export interface ContentImagePlayerProps {
+  isWinner?: boolean
+}
+
 export const TouchableOpacityContainer = styled.TouchableOpacity<TouchableOpacityContainerProps>`
   flex-direction: ${(props) =>
     props.variant === "player-one" ? "row" : "row-reverse"};
@@ -12,13 +16,21 @@ export const TouchableOpacityContainer = styled.TouchableOpacity<TouchableOpacit
   gap: 16px;
 `
 
-export const ImagePlayer = styled.Image`
+export const ContentImagePlayer = styled.View<ContentImagePlayerProps>`
+  overflow: hidden;
   border-radius: 40px;
+  border: 2px solid
+    ${(props) =>
+      props.isWinner ? props.theme.colors.emerald[500] : "transparent"};
 `
 
-export const Box = styled.Image`
+export const Box = styled.View`
   width: 32px;
   height: 32px;
   border-radius: 16px;
   background-color: ${(props) => props.theme.colors.section};
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `

@@ -1,20 +1,21 @@
-import { View } from "react-native"
+import { Image } from "react-native"
 
 import { Button } from "@/components/Button"
 import { PlayerOfTheMatch } from "@/components/PlayerOfTheMatch"
 
+import vs from "@/assets/vs.png"
+
 import { Container, DateToday, ContentMatchesList } from "./styles"
 
-interface HomeProps {}
-
-export function Home({ ...rest }: HomeProps) {
+export function Home() {
   return (
     <Container>
       <DateToday>07/02/2024</DateToday>
 
       <ContentMatchesList>
         <PlayerOfTheMatch />
-        <PlayerOfTheMatch variant="player-two" />
+        <Image source={vs} width={50} />
+        <PlayerOfTheMatch variant="player-two" isWinner />
       </ContentMatchesList>
 
       <Button label="Salvar" />
