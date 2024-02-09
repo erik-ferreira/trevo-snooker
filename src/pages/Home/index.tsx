@@ -1,4 +1,5 @@
 import { Button } from "@/components/Button"
+import { PlayerOfTheMatch } from "@/components/PlayerOfTheMatch"
 
 import { Container, DateToday } from "./styles"
 
@@ -9,7 +10,9 @@ export function Home({ ...rest }: HomeProps) {
     <Container>
       <DateToday>07/02/2024</DateToday>
 
-      <Button />
+      <PlayerOfTheMatch />
+
+      <Button label="Salvar" />
     </Container>
   )
 }
