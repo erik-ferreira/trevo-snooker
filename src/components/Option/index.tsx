@@ -17,11 +17,7 @@ export function Option({
   ...rest
 }: OptionProps) {
   return (
-    <ContainerOption
-      activeOpacity={0.7}
-      disabled={isReadOnly || rest.disabled}
-      {...rest}
-    >
+    <ContainerOption disabled={isReadOnly || rest.disabled} {...rest}>
       <BoxCheck showCheck={isChecked} />
       <OptionLabel>{label}</OptionLabel>
     </ContainerOption>

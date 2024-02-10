@@ -25,7 +25,6 @@ export function PlayerOfTheMatch({
 }: PlayerOfTheMatchProps) {
   return (
     <TouchableOpacityContainer
-      activeOpacity={0.7}
       variant={variant}
       disabled={isReadOnly || rest.disabled}
       {...rest}

@@ -1,6 +1,8 @@
 import styled from "styled-components/native"
 
-export const ContainerOption = styled.TouchableOpacity`
+export const ContainerOption = styled.TouchableOpacity.attrs(() => ({
+  activeOpacity: 0.7,
+}))`
   flex-direction: row;
   align-items: center;
   gap: 8px;

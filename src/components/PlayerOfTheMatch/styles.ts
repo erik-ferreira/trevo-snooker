@@ -8,7 +8,9 @@ export interface ContentImagePlayerProps {
   isWinner?: boolean
 }
 
-export const TouchableOpacityContainer = styled.TouchableOpacity<TouchableOpacityContainerProps>`
+export const TouchableOpacityContainer = styled.TouchableOpacity.attrs(() => ({
+  activeOpacity: 0.7,
+}))<TouchableOpacityContainerProps>`
   flex-direction: ${(props) =>
     props.variant === "player-one" ? "row" : "row-reverse"};
   align-items: center;

@@ -16,7 +16,7 @@ export function Button({
   const theme = useTheme()
 
   return (
-    <ButtonContainer activeOpacity={0.7} {...rest}>
+    <ButtonContainer {...rest}>
       {loading ? (
         <ActivityIndicator color={theme.colors.slate[100]} />
       ) : (

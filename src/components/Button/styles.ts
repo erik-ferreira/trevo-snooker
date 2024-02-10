@@ -1,6 +1,8 @@
 import styled from "styled-components/native"
 
-export const ButtonContainer = styled.TouchableOpacity`
+export const ButtonContainer = styled.TouchableOpacity.attrs(() => ({
+  activeOpacity: 0.7,
+}))`
   width: 100%;
   border-radius: 4px;
   padding: 12px 16px;
