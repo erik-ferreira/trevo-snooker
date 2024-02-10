@@ -23,13 +23,3 @@ export const ContentImagePlayer = styled.View<ContentImagePlayerProps>`
     ${(props) =>
       props.isWinner ? props.theme.colors.emerald[500] : "transparent"};
 `
-
-export const Box = styled.View`
-  width: 32px;
-  height: 32px;
-  border-radius: 16px;
-  background-color: ${(props) => props.theme.colors.section};
-
-  align-items: center;
-  justify-content: center;
-`

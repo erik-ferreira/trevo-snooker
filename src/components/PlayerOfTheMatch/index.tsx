@@ -1,12 +1,10 @@
-import { useTheme } from "styled-components/native"
 import { TouchableOpacityProps, Image } from "react-native"
 
-import { Icon } from "@/components/Icon"
+import { BoxCheck } from "@/components/BoxCheck"
 
 import player from "@/assets/player.png"
 
 import {
-  Box,
   ContentImagePlayer,
   ContentImagePlayerProps,
   TouchableOpacityContainer,
@@ -22,15 +20,13 @@ export function PlayerOfTheMatch({
   isWinner = false,
   ...rest
 }: PlayerOfTheMatchProps) {
-  const { colors } = useTheme()
-
   return (
     <TouchableOpacityContainer activeOpacity={0.7} variant={variant} {...rest}>
       <ContentImagePlayer isWinner={isWinner}>
         <Image source={player} width={80} height={80} />
       </ContentImagePlayer>
 
-      <Box>{isWinner && <Icon name="Check" color={colors.emerald[500]} />}</Box>
+      <BoxCheck showCheck={isWinner} />
     </TouchableOpacityContainer>
   )
 }
