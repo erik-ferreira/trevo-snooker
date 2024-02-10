@@ -30,9 +30,7 @@ export function PlayerOfTheMatch({
         <Image source={player} width={80} height={80} />
       </ContentImagePlayer>
 
-      <Box>
-        <Icon name="Check" color={colors.emerald[500]} />
-      </Box>
+      <Box>{isWinner && <Icon name="Check" color={colors.emerald[500]} />}</Box>
     </TouchableOpacityContainer>
   )
 }

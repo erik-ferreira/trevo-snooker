@@ -30,7 +30,6 @@ export const Box = styled.View`
   border-radius: 16px;
   background-color: ${(props) => props.theme.colors.section};
 
-  display: flex;
   align-items: center;
   justify-content: center;
 `
