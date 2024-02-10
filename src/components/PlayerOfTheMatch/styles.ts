@@ -13,7 +13,7 @@ export const TouchableOpacityContainer = styled.TouchableOpacity<TouchableOpacit
     props.variant === "player-one" ? "row" : "row-reverse"};
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 8px;
 `
 
 export const ContentImagePlayer = styled.View<ContentImagePlayerProps>`

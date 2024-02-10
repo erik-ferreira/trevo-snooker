@@ -1,18 +1,26 @@
-import { Image } from "react-native"
+import { Image, View } from "react-native"
 
 import { Button } from "@/components/Button"
 import { Option } from "@/components/Option"
 import { PlayerOfTheMatch } from "@/components/PlayerOfTheMatch"
 
+import { getCurrentDate } from "@/utils/getCurrentDate"
+
 import vs from "@/assets/vs.png"
 
-import { Container, DateToday, ContentMatchesList } from "./styles"
-import { View } from "lucide-react-native"
+import {
+  Container,
+  DateToday,
+  ContentMatchesList,
+  ContentOptions,
+} from "./styles"
 
 export function Home() {
+  const currentDate = getCurrentDate()
+
   return (
     <Container>
-      <DateToday>07/02/2024</DateToday>
+      <DateToday>{currentDate}</DateToday>
 
       <ContentMatchesList>
         <PlayerOfTheMatch />
@@ -20,8 +28,10 @@ export function Home() {
         <PlayerOfTheMatch variant="player-two" isWinner />
       </ContentMatchesList>
 
-      <Option />
-      <Option label="Suicídio" />
+      <ContentOptions>
+        <Option />
+        <Option label="Suicídio" />
+      </ContentOptions>
 
       <Button label="Salvar" />
     </Container>
