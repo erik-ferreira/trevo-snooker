@@ -7,5 +7,5 @@ export const Container = styled.SafeAreaView`
   justify-content: center;
 
   padding: 40px 32px;
-  background-color: ${(props) => props.theme.colors.page};
+  /* background-color: ${(props) => props.theme.colors.page}; */
 `
