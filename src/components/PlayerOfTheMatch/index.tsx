@@ -13,20 +13,28 @@ import {
 
 type PlayerOfTheMatchProps = TouchableOpacityProps &
   TouchableOpacityContainerProps &
-  ContentImagePlayerProps & {}
+  ContentImagePlayerProps & {
+    isReadOnly?: boolean
+  }
 
 export function PlayerOfTheMatch({
   variant = "player-one",
   isWinner = false,
+  isReadOnly = false,
   ...rest
 }: PlayerOfTheMatchProps) {
   return (
-    <TouchableOpacityContainer activeOpacity={0.7} variant={variant} {...rest}>
+    <TouchableOpacityContainer
+      activeOpacity={0.7}
+      variant={variant}
+      disabled={isReadOnly || rest.disabled}
+      {...rest}
+    >
       <ContentImagePlayer isWinner={isWinner}>
         <Image source={player} width={80} height={80} />
       </ContentImagePlayer>
 
-      <BoxCheck showCheck={isWinner} />
+      {!isReadOnly && <BoxCheck showCheck={isWinner} />}
     </TouchableOpacityContainer>
   )
 }
