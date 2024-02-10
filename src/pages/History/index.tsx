@@ -1,11 +1,13 @@
-import { Container, Label } from "./styles"
+import { Select } from "@/components/Select"
+
+import { Container } from "./styles"
 
 interface HistoryProps {}
 
 export function History({ ...rest }: HistoryProps) {
   return (
     <Container>
-      <Label>History</Label>
+      <Select />
     </Container>
   )
 }
