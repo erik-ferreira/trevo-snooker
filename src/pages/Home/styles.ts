@@ -25,3 +25,26 @@ export const ContentMatchesList = styled.View`
 export const ContentOptions = styled.View`
   gap: 8px;
 `
+// modal
+
+export const ModalHeader = styled.View`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+`
+
+export const Title = styled.Text`
+  color: ${(props) => props.theme.colors.slate["200"]};
+  font-size: 24px;
+  font-family: ${(props) => props.theme.fonts.raj.bold};
+`
+
+export const NumberOfPlayers = styled.Text`
+  color: ${(props) => props.theme.colors.slate["200"]};
+  font-size: 16px;
+  font-family: ${(props) => props.theme.fonts.raj.semiBold};
+`
+
+export const ModalContent = styled.View`
+  padding: 16px 0;
+`

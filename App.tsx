@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar"
 import {
   Rajdhani_400Regular,
+  Rajdhani_600SemiBold,
   Rajdhani_700Bold,
 } from "@expo-google-fonts/rajdhani"
 import {
@@ -25,6 +26,7 @@ export default function App() {
     Rajdhani_400Regular,
     Rajdhani_700Bold,
     JetBrainsMono_400Regular,
+    Rajdhani_600SemiBold,
     JetBrainsMono_700Bold,
   })
 

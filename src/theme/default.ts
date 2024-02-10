@@ -6,6 +6,7 @@ export const defaultTheme = {
     },
     raj: {
       normal: "Rajdhani_400Regular",
+      semiBold: "Rajdhani_600SemiBold",
       bold: "Rajdhani_700Bold",
     },
     mono: {
