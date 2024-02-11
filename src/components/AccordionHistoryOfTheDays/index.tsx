@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { View, Text, Image, ScrollView } from "react-native"
+import { View, Text, Image, ScrollView, FlatList } from "react-native"
 import Accordion from "react-native-collapsible/Accordion"
 
 import { Icon } from "@/components/Icon"
@@ -55,6 +55,30 @@ export function AccordionHistoryOfTheDays({
       isSuicide: false,
       isSnookerHood: false,
     },
+    {
+      matchNumber: 3,
+      playerOneSrc: "",
+      playerTwoSrc: "",
+      winningPlayerId: 1,
+      isSuicide: false,
+      isSnookerHood: false,
+    },
+    {
+      matchNumber: 4,
+      playerOneSrc: "",
+      playerTwoSrc: "",
+      winningPlayerId: 1,
+      isSuicide: false,
+      isSnookerHood: false,
+    },
+    {
+      matchNumber: 5,
+      playerOneSrc: "",
+      playerTwoSrc: "",
+      winningPlayerId: 1,
+      isSuicide: false,
+      isSnookerHood: false,
+    },
   ]
 
   const daysMatches: DaysMatchProps[] = [
@@ -74,40 +98,73 @@ export function AccordionHistoryOfTheDays({
       title: "05/01/2024",
       matches,
     },
+    {
+      title: "17/01/2024",
+      matches,
+    },
+    {
+      title: "25/01/2024",
+      matches,
+    },
+    {
+      title: "20/01/2024",
+      matches,
+    },
+    {
+      title: "25/01/2024",
+      matches,
+    },
+    {
+      title: "30/01/2024",
+      matches,
+    },
+    {
+      title: "05/01/2024",
+      matches,
+    },
+    {
+      title: "17/01/2024",
+      matches,
+    },
+    {
+      title: "25/01/2024",
+      matches,
+    },
+    {
+      title: "20/01/2024",
+      matches,
+    },
+    {
+      title: "25/01/2024",
+      matches,
+    },
+    {
+      title: "30/01/2024",
+      matches,
+    },
+    {
+      title: "05/01/2024",
+      matches,
+    },
+    {
+      title: "17/01/2024",
+      matches,
+    },
+    {
+      title: "25/01/2024",
+      matches,
+    },
   ]
 
   return (
-    <Accordion
-      containerStyle={{ width: "100%" }}
-      sections={daysMatches}
-      activeSections={activeDay}
-      onChange={(val: number[]) => setActiveDay(val)}
-      renderHeader={(section: DaysMatchProps) => (
-        <HeaderSection>
-          <SectionDateTitle>{section?.title}</SectionDateTitle>
-        </HeaderSection>
-      )}
-      renderContent={(section: DaysMatchProps) => {
+    <ScrollView>
+      {daysMatches.map((day, index) => {
         return (
-          <ScrollView>
-            {section.matches.map((match) => (
-              <ContentSection key={match?.matchNumber}>
-                <MatchNumber>{match?.matchNumber}º partida</MatchNumber>
-                <ContentMatch>
-                  <PlayerOfTheMatch isReadOnly />
-                  <Image source={vs} width={50} />
-                  <PlayerOfTheMatch variant="player-two" isReadOnly isWinner />
-                </ContentMatch>
-
-                <ContentOptionsByMatch>
-                  <Option label="Capote" />
-                  <Option label="Suicídio" />
-                </ContentOptionsByMatch>
-              </ContentSection>
-            ))}
-          </ScrollView>
+          <HeaderSection key={index}>
+            <SectionDateTitle>{day?.title}</SectionDateTitle>
+          </HeaderSection>
         )
-      }}
-    />
+      })}
+    </ScrollView>
   )
 }

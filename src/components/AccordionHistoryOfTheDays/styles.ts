@@ -1,9 +1,28 @@
-import styled from "styled-components/native"
+import styled, { css } from "styled-components/native"
 
-export const HeaderSection = styled.View`
+interface HeaderSectionProps {
+  isFirstSection?: boolean
+  isLastSection?: boolean
+}
+
+export const HeaderSection = styled.TouchableOpacity<HeaderSectionProps>`
   width: 100%;
   padding: 8px 16px;
   background-color: ${(props) => props.theme.colors.gray[800]};
+
+  ${(props) =>
+    props.isFirstSection &&
+    css`
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+    `}
+
+  ${(props) =>
+    props.isLastSection &&
+    css`
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
+    `}
 `
 
 export const SectionDateTitle = styled.Text`
@@ -23,6 +42,7 @@ export const MatchNumber = styled.Text`
   font-size: 16px;
   color: ${(props) => props.theme.colors.slate[200]};
   font-family: ${(props) => props.theme.fonts.orbi.semiBold};
+  margin-bottom: 8px;
 `
 
 export const ContentMatch = styled.View`

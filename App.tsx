@@ -16,7 +16,7 @@ import {
 import { ThemeProvider } from "styled-components/native"
 import { NavigationContainer } from "@react-navigation/native"
 
-import { TabRoutes } from "@/routes/tab.routes"
+import { StackRoutes } from "@/routes/stack.routes"
 import { defaultTheme } from "@/theme/default"
 
 export default function App() {
@@ -37,7 +37,7 @@ export default function App() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <NavigationContainer>
-        <TabRoutes />
+        <StackRoutes />
         <StatusBar style="light" />
       </NavigationContainer>
     </ThemeProvider>
