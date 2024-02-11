@@ -19,6 +19,9 @@ export const defaultTheme = {
     page: "#090B0E",
     section: "#0F172A",
 
+    white: "#FFFFFF",
+    black: "#000000",
+
     slate: {
       50: "#f8fafc",
       100: "#f1f5f9",

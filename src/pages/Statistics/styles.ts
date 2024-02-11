@@ -5,6 +5,8 @@ export const Container = styled.SafeAreaView`
   align-items: center;
   justify-content: center;
   background-color: ${(props) => props.theme.colors.page};
+
+  padding: 0 24px;
 `
 
 export const ContentTitle = styled.SafeAreaView`
