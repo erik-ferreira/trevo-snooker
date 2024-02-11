@@ -6,7 +6,15 @@ import { Icon } from "@/components/Icon"
 
 import player from "@/assets/player.png"
 
-import { Container, ContentTitle, Title, ButtonPreviewMode } from "./styles"
+import {
+  Container,
+  ContentTitle,
+  Title,
+  ButtonPreviewMode,
+  Box,
+  InfoBox,
+  Row,
+} from "./styles"
 
 export function Statistics() {
   const { colors, fonts } = useTheme()
@@ -20,18 +28,94 @@ export function Statistics() {
   const table = {
     header: ["F", "V", "D", "CF", "CS", "S", "P"],
     values: [
-      ["x", 38, 27, 3, 2, 1, 0],
-      ["x", 38, 10, 3, 2, 1, 0],
-      ["x", 38, 10, 3, 2, 1, 0],
-      ["x", 38, 10, 3, 2, 1, 0],
-      ["x", 38, 10, 3, 2, 1, 0],
+      [
+        <View
+          style={{
+            width: 24,
+            height: 24,
+            borderRadius: 12,
+            backgroundColor: "#F00",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Text
+            style={{
+              color: colors.white,
+              fontFamily: fonts.mono.bold,
+            }}
+          >
+            E
+          </Text>
+        </View>,
+        38,
+        27,
+        3,
+        2,
+        1,
+        0,
+      ],
+      [
+        <View
+          style={{
+            width: 24,
+            height: 24,
+            borderRadius: 12,
+            backgroundColor: "#F00",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Text
+            style={{
+              color: colors.white,
+              fontFamily: fonts.mono.bold,
+            }}
+          >
+            E
+          </Text>
+        </View>,
+        38,
+        27,
+        3,
+        2,
+        1,
+        0,
+      ],
+      [
+        <View
+          style={{
+            width: 24,
+            height: 24,
+            borderRadius: 12,
+            backgroundColor: "#F00",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Text
+            style={{
+              color: colors.white,
+              fontFamily: fonts.mono.bold,
+            }}
+          >
+            E
+          </Text>
+        </View>,
+        38,
+        27,
+        3,
+        2,
+        1,
+        0,
+      ],
     ],
   }
 
   return (
     <Container>
       <ContentTitle>
-        <Title>Visualizar tabela no formato:</Title>
+        <Title>Visualizar tabela em modo:</Title>
 
         <ButtonPreviewMode
           isSelected={isSelectedHorizontal}
@@ -48,58 +132,23 @@ export function Statistics() {
         </ButtonPreviewMode>
       </ContentTitle>
 
-      <View style={{}}>
-        <View style={{ flexDirection: "row" }}>
+      <View>
+        <Row>
           {table.header.map((item) => (
-            <View
-              style={{
-                width: 50,
-                height: 40,
-                backgroundColor: colors.gray[800],
-
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              key={item}
-            >
-              <Text
-                style={{
-                  fontFamily: fonts.mono.bold,
-                  fontSize: 18,
-                  color: colors.white,
-                }}
-              >
-                {item}
-              </Text>
-            </View>
+            <Box key={item} isHead>
+              <InfoBox>{item}</InfoBox>
+            </Box>
           ))}
-        </View>
+        </Row>
         {table.values.map((item, index) => {
           return (
-            <View key={index} style={{ flexDirection: "row" }}>
-              {item.map((val) => (
-                <View
-                  style={{
-                    width: 50,
-                    height: 40,
-                    backgroundColor: colors.gray[900],
-
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontFamily: fonts.mono.bold,
-                      fontSize: 18,
-                      color: colors.white,
-                    }}
-                  >
-                    {val}
-                  </Text>
-                </View>
+            <Row key={index}>
+              {item.map((val, index) => (
+                <Box key={index}>
+                  <InfoBox>{val}</InfoBox>
+                </Box>
               ))}
-            </View>
+            </Row>
           )
         })}
       </View>

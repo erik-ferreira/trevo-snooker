@@ -13,6 +13,7 @@ export const ContentTitle = styled.SafeAreaView`
   flex-direction: row;
   align-items: center;
   gap: 8px;
+  margin-bottom: 16px;
 `
 
 export const Title = styled.Text`
@@ -42,4 +43,28 @@ export const ButtonPreviewMode = styled.TouchableOpacity.attrs(() => ({
   justify-content: center;
 
   transition: background-color 2s linear;
+`
+
+export const Row = styled.View`
+  flex-direction: row;
+`
+
+interface BoxProps {
+  isHead?: boolean
+}
+
+export const Box = styled.View<BoxProps>`
+  width: 50px;
+  height: 40px;
+  background-color: ${(props) =>
+    props.isHead ? props.theme.colors.gray[800] : props.theme.colors.gray[900]};
+
+  align-items: center;
+  justify-content: center;
+`
+
+export const InfoBox = styled.Text`
+  font-size: 18px;
+  color: ${(props) => props.theme.colors.white};
+  font-family: ${(props) => props.theme.fonts.mono.bold};
 `
