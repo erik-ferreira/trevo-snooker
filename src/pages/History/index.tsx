@@ -7,6 +7,8 @@ import { Select } from "@/components/Select"
 import { Divider } from "@/components/Divider"
 
 import { Container, DateOfAMatch, DateOfAMatchTitle } from "./styles"
+import { Button } from "@/components/Button"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 interface DaysMatchProps {
   title: string
@@ -32,6 +34,13 @@ export function History() {
   return (
     <Container>
       <Select />
+
+      <Button
+        label="Limpar partidas"
+        onPress={() => {
+          AsyncStorage.removeItem("@trevo-snooker")
+        }}
+      />
 
       <FlatList
         data={daysMatches}
