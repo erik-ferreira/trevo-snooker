@@ -7,12 +7,12 @@ import player from "@/assets/player.png"
 import {
   ContentImagePlayer,
   ContentImagePlayerProps,
-  TouchableOpacityContainer,
-  TouchableOpacityContainerProps,
+  PlayerOfTheMatchContainer,
+  PlayerOfTheMatchContainerProps,
 } from "./styles"
 
 type PlayerOfTheMatchProps = TouchableOpacityProps &
-  TouchableOpacityContainerProps &
+  PlayerOfTheMatchContainerProps &
   ContentImagePlayerProps & {
     isReadOnly?: boolean
   }
@@ -24,7 +24,7 @@ export function PlayerOfTheMatch({
   ...rest
 }: PlayerOfTheMatchProps) {
   return (
-    <TouchableOpacityContainer
+    <PlayerOfTheMatchContainer
       variant={variant}
       disabled={isReadOnly || rest.disabled}
       {...rest}
@@ -34,6 +34,6 @@ export function PlayerOfTheMatch({
       </ContentImagePlayer>
 
       {!isReadOnly && <BoxCheck showCheck={isWinner} />}
-    </TouchableOpacityContainer>
+    </PlayerOfTheMatchContainer>
   )
 }

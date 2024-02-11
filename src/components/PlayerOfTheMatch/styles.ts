@@ -1,6 +1,6 @@
 import styled from "styled-components/native"
 
-export interface TouchableOpacityContainerProps {
+export interface PlayerOfTheMatchContainerProps {
   variant?: "player-one" | "player-two"
 }
 
@@ -8,9 +8,9 @@ export interface ContentImagePlayerProps {
   isWinner?: boolean
 }
 
-export const TouchableOpacityContainer = styled.TouchableOpacity.attrs(() => ({
+export const PlayerOfTheMatchContainer = styled.TouchableOpacity.attrs(() => ({
   activeOpacity: 0.7,
-}))<TouchableOpacityContainerProps>`
+}))<PlayerOfTheMatchContainerProps>`
   flex-direction: ${(props) =>
     props.variant === "player-one" ? "row" : "row-reverse"};
   align-items: center;
