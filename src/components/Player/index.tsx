@@ -1,6 +1,6 @@
 import { TouchableOpacityProps, Image } from "react-native"
 
-import player from "@/assets/player.png"
+import { PlayerDTO } from "@/dtos/PlayerDTO"
 
 import {
   ContainerPlayer,
@@ -11,15 +11,12 @@ import {
 } from "./styles"
 
 interface PlayerProps extends TouchableOpacityProps {
-  playerName?: string
-  numberOfMatchesPlayed?: number
+  player: PlayerDTO
 }
 
-export function Player({
-  playerName = "Erik Ferreira",
-  numberOfMatchesPlayed = 2,
-  ...rest
-}: PlayerProps) {
+export function Player({ player, ...rest }: PlayerProps) {
+  const numberOfMatchesPlayed = player.matches.length
+
   let formatDescriptionByNumberOfMatchesPlayed = `${numberOfMatchesPlayed} partidas jogadas`
 
   if (numberOfMatchesPlayed === 0) {
@@ -31,11 +28,11 @@ export function Player({
   return (
     <ContainerPlayer {...rest}>
       <ContentPlayerAvatar>
-        <Image source={player} width={80} height={80} />
+        <Image source={player.avatarUrl} width={80} height={80} />
       </ContentPlayerAvatar>
 
       <ContentPlayerDescriptions>
-        <PlayerName>{playerName}</PlayerName>
+        <PlayerName>{player.name}</PlayerName>
         <NumberOfMatchesPlayed>
           {formatDescriptionByNumberOfMatchesPlayed}
         </NumberOfMatchesPlayed>

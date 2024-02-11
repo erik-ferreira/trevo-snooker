@@ -9,6 +9,8 @@ import { Option } from "@/components/Option"
 import { Divider } from "@/components/Divider"
 import { PlayerOfTheMatch } from "@/components/PlayerOfTheMatch"
 
+import { players } from "@/defaults/players"
+
 import { getCurrentDate } from "@/utils/getCurrentDate"
 
 import vs from "@/assets/vs.png"
@@ -29,64 +31,12 @@ import {
   ModalBodyStyle,
 } from "./styles"
 
-const players = [
-  {
-    id: 1,
-    name: "Erik Ferreira",
-    matchesPlayed: 4,
-  },
-  {
-    id: 2,
-    name: "José David",
-    matchesPlayed: 4,
-  },
-  {
-    id: 3,
-    name: "Breno Alves",
-    matchesPlayed: 4,
-  },
-  {
-    id: 4,
-    name: "Antonio",
-    matchesPlayed: 4,
-  },
-  {
-    id: 5,
-    name: "Erik Ferreira",
-    matchesPlayed: 4,
-  },
-  {
-    id: 6,
-    name: "Erik Ferreira",
-    matchesPlayed: 4,
-  },
-  {
-    id: 7,
-    name: "Erik Ferreira",
-    matchesPlayed: 4,
-  },
-  {
-    id: 8,
-    name: "Erik Ferreira",
-    matchesPlayed: 4,
-  },
-  {
-    id: 9,
-    name: "Erik Ferreira",
-    matchesPlayed: 4,
-  },
-  {
-    id: 10,
-    name: "Erik Ferreira",
-    matchesPlayed: 4,
-  },
-]
-
 type WinnerPlayerProps = "player-one" | "player-two" | null
 type OptionMatchProps = "is-capote" | "is-suicide" | null
 
 export function Home() {
   const currentDate = getCurrentDate()
+  const totalPlayers = players.length
 
   const [visibleModal, setVisibleModal] = useState(false)
   const [winnerPlayer, setWinnerPlayer] = useState<WinnerPlayerProps>(null)
@@ -168,19 +118,14 @@ export function Home() {
 
           <ModalHeader>
             <ModalTitle>Jogadores</ModalTitle>
-            <NumberOfPlayers>Total 4</NumberOfPlayers>
+            <NumberOfPlayers>Total {totalPlayers}</NumberOfPlayers>
           </ModalHeader>
 
           <FlatList
             data={players}
             keyExtractor={(item) => item.id.toString()}
             ItemSeparatorComponent={Divider}
-            renderItem={({ item }) => (
-              <Player
-                playerName={item.name}
-                numberOfMatchesPlayed={item.matchesPlayed}
-              />
-            )}
+            renderItem={({ item }) => <Player player={item} />}
             contentContainerStyle={ModalBodyStyle}
           />
         </ModalContent>
