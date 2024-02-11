@@ -1,7 +1,8 @@
 import { useState } from "react"
 import Modal from "react-native-modal"
-import ToastD from "react-native-toast-message"
+import Toast from "react-native-toast-message"
 import { Image, FlatList } from "react-native"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 import { Player } from "@/components/Player"
 import { Button } from "@/components/Button"
@@ -11,6 +12,7 @@ import { PlayerOfTheMatch } from "@/components/PlayerOfTheMatch"
 
 import { players } from "@/defaults/players"
 
+import { MatchDTO } from "@/dtos/MatchDTO"
 import { PlayerDTO } from "@/dtos/PlayerDTO"
 
 import { getCurrentDate } from "@/utils/getCurrentDate"
@@ -84,16 +86,74 @@ export function Home() {
     handleCloseModal()
   }
 
-  function handleSaveMatch() {
+  async function handleSaveMatch() {
     if (!winnerPlayer) {
-      ToastD.show({
+      return Toast.show({
         type: "info",
         text1: "Ops...",
         text2: "Selecione o jogador que venceu a partida para salvar",
-        visibilityTime: 10000,
+        visibilityTime: 2000,
       })
     }
+
+    const key = "@trevo-snooker"
+
+    const newMatch: MatchDTO = {
+      id: Math.random(),
+      playerOneId: playerOne.id,
+      playerTwoId: playerTwo.id,
+      playerWinnerId:
+        winnerPlayer === "player-one" ? playerOne.id : playerTwo.id,
+      isCapote: optionMatch === "is-capote",
+      isSuicide: optionMatch === "is-suicide",
+      createdAt: new Date(),
+    }
+
+    let matches: MatchDTO[] = []
+
+    try {
+      const value = await AsyncStorage.getItem(key)
+
+      if (!value) {
+        await AsyncStorage.setItem(key, JSON.stringify(matches))
+      } else {
+        matches = JSON.parse(value)
+      }
+
+      matches = [...matches, newMatch]
+
+      // console.log("matches", matches)
+
+      await AsyncStorage.setItem(key, JSON.stringify(matches))
+
+      Toast.show({
+        type: "success",
+        text1: "Show",
+        text2: "Partida cadastrada com sucesso!",
+        visibilityTime: 2000,
+      })
+
+      setWinnerPlayer(null)
+      setOptionMatch(null)
+    } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "Ops...",
+        text2: "Não foi possível criar uma partida",
+        visibilityTime: 2000,
+      })
+      console.log("problem", e)
+    }
   }
+
+  // async function handleTeste() {
+  //   const value = await AsyncStorage.getItem("@trevo-snooker")
+  //   const listValue = value ? JSON.parse(value) : []
+
+  //   listValue.map((val: MatchDTO, index: number) => {
+  //     console.log(index + 1, " - ", JSON.stringify(val, null, 2))
+  //   })
+  // }
 
   return (
     <Container>
@@ -131,6 +191,7 @@ export function Home() {
       </ContentOptions>
 
       <Button label="Salvar" onPress={handleSaveMatch} />
+      {/* <Button label="Test" onPress={handleTeste} /> */}
 
       <Modal
         isVisible={modalProps.visibleModal}
