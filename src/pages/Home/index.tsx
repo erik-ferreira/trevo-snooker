@@ -11,6 +11,8 @@ import { PlayerOfTheMatch } from "@/components/PlayerOfTheMatch"
 
 import { players } from "@/defaults/players"
 
+import { PlayerDTO } from "@/dtos/PlayerDTO"
+
 import { getCurrentDate } from "@/utils/getCurrentDate"
 
 import vs from "@/assets/vs.png"
@@ -33,21 +35,35 @@ import {
 
 type WinnerPlayerProps = "player-one" | "player-two" | null
 type OptionMatchProps = "is-capote" | "is-suicide" | null
+type PlayerPressProps = "player-one" | "player-two"
+
+interface ModalProps {
+  visibleModal: boolean
+  playerPress: PlayerPressProps
+}
 
 export function Home() {
   const currentDate = getCurrentDate()
   const totalPlayers = players.length
 
-  const [visibleModal, setVisibleModal] = useState(false)
+  const [modalProps, setModalProps] = useState<ModalProps>({
+    playerPress: "player-one",
+    visibleModal: false,
+  })
   const [winnerPlayer, setWinnerPlayer] = useState<WinnerPlayerProps>(null)
   const [optionMatch, setOptionMatch] = useState<OptionMatchProps>(null)
+  const [playerOne, setPlayerOne] = useState<PlayerDTO>(players[0])
+  const [playerTwo, setPlayerTwo] = useState<PlayerDTO>(players[1])
 
-  function handleShowModal() {
-    setVisibleModal(true)
+  function handleShowModal(playerPress: PlayerPressProps) {
+    setModalProps({
+      playerPress,
+      visibleModal: true,
+    })
   }
 
   function handleCloseModal() {
-    setVisibleModal(false)
+    setModalProps((prevState) => ({ ...prevState, visibleModal: false }))
   }
 
   function handleChangeWinnerPlayer(winner: WinnerPlayerProps) {
@@ -56,6 +72,16 @@ export function Home() {
 
   function handleChangeOptionMatch(option: OptionMatchProps) {
     setOptionMatch((prevState) => (prevState === option ? null : option))
+  }
+
+  function handleUpdatePlayerInMatcher(player: PlayerDTO) {
+    if (modalProps.playerPress === "player-one") {
+      setPlayerOne(player)
+    } else {
+      setPlayerTwo(player)
+    }
+
+    handleCloseModal()
   }
 
   function handleSaveMatch() {
@@ -75,15 +101,17 @@ export function Home() {
 
       <ContentMatchesList>
         <PlayerOfTheMatch
+          player={playerOne}
           variant="player-one"
-          onLongPress={handleShowModal}
+          onLongPress={() => handleShowModal("player-one")}
           isWinner={winnerPlayer === "player-one"}
           onPress={() => handleChangeWinnerPlayer("player-one")}
         />
         <Image source={vs} width={50} />
         <PlayerOfTheMatch
+          player={playerTwo}
           variant="player-two"
-          onLongPress={handleShowModal}
+          onLongPress={() => handleShowModal("player-two")}
           isWinner={winnerPlayer === "player-two"}
           onPress={() => handleChangeWinnerPlayer("player-two")}
         />
@@ -105,7 +133,7 @@ export function Home() {
       <Button label="Salvar" onPress={handleSaveMatch} />
 
       <Modal
-        isVisible={visibleModal}
+        isVisible={modalProps.visibleModal}
         onSwipeComplete={handleCloseModal}
         onBackButtonPress={handleCloseModal}
         onBackdropPress={handleCloseModal}
@@ -125,7 +153,13 @@ export function Home() {
             data={players}
             keyExtractor={(item) => item.id.toString()}
             ItemSeparatorComponent={Divider}
-            renderItem={({ item }) => <Player player={item} />}
+            renderItem={({ item }) => (
+              <Player
+                player={item}
+                disabled={item.id === playerOne.id || item.id === playerTwo.id}
+                onPress={() => handleUpdatePlayerInMatcher(item)}
+              />
+            )}
             contentContainerStyle={ModalBodyStyle}
           />
         </ModalContent>

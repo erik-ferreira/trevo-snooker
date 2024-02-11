@@ -1,9 +1,14 @@
-import styled from "styled-components/native"
+import styled, { css } from "styled-components/native"
 
 export const ContainerPlayer = styled.TouchableOpacity`
   gap: 24px;
   flex-direction: row;
   align-items: center;
+  ${(props) =>
+    props.disabled &&
+    css`
+      opacity: 0.3;
+    `}
 `
 
 export const ContentPlayerAvatar = styled.View`

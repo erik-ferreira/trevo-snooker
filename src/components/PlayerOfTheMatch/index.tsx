@@ -1,8 +1,8 @@
-import { TouchableOpacityProps, Image } from "react-native"
+import { TouchableOpacityProps, Image, ImageSourcePropType } from "react-native"
 
 import { BoxCheck } from "@/components/BoxCheck"
 
-import player from "@/assets/player.png"
+import { PlayerDTO } from "@/dtos/PlayerDTO"
 
 import {
   ContentImagePlayer,
@@ -15,12 +15,14 @@ type PlayerOfTheMatchProps = TouchableOpacityProps &
   PlayerOfTheMatchContainerProps &
   ContentImagePlayerProps & {
     isReadOnly?: boolean
+    player: PlayerDTO
   }
 
 export function PlayerOfTheMatch({
   variant = "player-one",
   isWinner = false,
   isReadOnly = false,
+  player,
   ...rest
 }: PlayerOfTheMatchProps) {
   return (
@@ -30,7 +32,7 @@ export function PlayerOfTheMatch({
       {...rest}
     >
       <ContentImagePlayer isWinner={isWinner}>
-        <Image source={player} width={80} height={80} />
+        <Image source={player.avatarUrl} width={80} height={80} />
       </ContentImagePlayer>
 
       {!isReadOnly && <BoxCheck showCheck={isWinner} />}
