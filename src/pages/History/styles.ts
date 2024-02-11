@@ -4,7 +4,7 @@ export const Container = styled.SafeAreaView`
   flex: 1;
   gap: 36px;
 
-  padding: 40px 32px 0;
+  padding: 40px 24px 0;
   background-color: ${(props) => props.theme.colors.page};
 `
 
@@ -13,7 +13,6 @@ export const DateOfAMatch = styled.TouchableOpacity.attrs(() => ({
 }))`
   width: 100%;
   padding: 8px 16px;
-  background-color: ${(props) => props.theme.colors.gray[800]};
 
   flex-direction: row;
   align-items: center;

@@ -4,14 +4,14 @@ export const Container = styled.SafeAreaView`
   flex: 1;
   gap: 36px;
 
-  padding: 40px 32px 0;
+  padding: 40px 24px 0;
   background-color: ${(props) => props.theme.colors.page};
 `
 
-export const ContentSection = styled.View`
+export const MatchContent = styled.View`
   padding: 8px;
-  background-color: ${(props) => props.theme.colors.gray[800]};
 
+  gap: 8px;
   align-items: center;
 `
 
@@ -19,15 +19,14 @@ export const MatchNumber = styled.Text`
   font-size: 16px;
   color: ${(props) => props.theme.colors.slate[200]};
   font-family: ${(props) => props.theme.fonts.orbi.semiBold};
-  margin-bottom: 8px;
 `
 
-export const ContentMatch = styled.View`
+export const MatchContentPlayers = styled.View`
   flex-direction: row;
   align-items: center;
   gap: 24px;
 `
 
-export const ContentOptionsByMatch = styled.View`
+export const MatchContentOptions = styled.View`
   gap: 4px;
 `

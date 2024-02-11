@@ -92,6 +92,7 @@ export function History() {
         )}
         ItemSeparatorComponent={Divider}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 24 }}
       />
     </Container>
   )

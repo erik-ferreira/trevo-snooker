@@ -8,10 +8,10 @@ import vs from "@/assets/vs.png"
 
 import {
   Container,
-  ContentSection,
+  MatchContent,
   MatchNumber,
-  ContentMatch,
-  ContentOptionsByMatch,
+  MatchContentPlayers,
+  MatchContentOptions,
 } from "./styles"
 
 const matches = [
@@ -40,19 +40,20 @@ export function Matches() {
         data={matches}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item }) => (
-          <ContentSection key={item?.matchNumber}>
+          <MatchContent key={item?.matchNumber}>
             <MatchNumber>{item?.matchNumber}º partida</MatchNumber>
-            <ContentMatch>
+
+            <MatchContentPlayers>
               <PlayerOfTheMatch isReadOnly />
               <Image source={vs} width={50} />
               <PlayerOfTheMatch variant="player-two" isReadOnly isWinner />
-            </ContentMatch>
+            </MatchContentPlayers>
 
-            <ContentOptionsByMatch>
+            <MatchContentOptions>
               <Option label="Capote" />
               <Option label="Suicídio" />
-            </ContentOptionsByMatch>
-          </ContentSection>
+            </MatchContentOptions>
+          </MatchContent>
         )}
         ItemSeparatorComponent={Divider}
       />
