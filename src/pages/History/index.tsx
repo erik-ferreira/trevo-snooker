@@ -2,12 +2,9 @@ import { FlatList } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 
 import { Select } from "@/components/Select"
+import { Divider } from "@/components/Divider"
 
-import { Container } from "./styles"
-import {
-  HeaderSection,
-  SectionDateTitle,
-} from "@/components/AccordionHistoryOfTheDays/styles"
+import { Container, DateOfAMatch, DateOfAMatchTitle } from "./styles"
 
 interface DaysMatchProps {
   title: string
@@ -70,9 +67,7 @@ const daysMatches: DaysMatchProps[] = [
   },
 ]
 
-interface HistoryProps {}
-
-export function History({ ...rest }: HistoryProps) {
+export function History() {
   const navigation = useNavigation()
 
   function handleNavigate() {
@@ -87,10 +82,11 @@ export function History({ ...rest }: HistoryProps) {
         data={daysMatches}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item }) => (
-          <HeaderSection onPress={handleNavigate}>
-            <SectionDateTitle>{item?.title}</SectionDateTitle>
-          </HeaderSection>
+          <DateOfAMatch onPress={handleNavigate}>
+            <DateOfAMatchTitle>{item?.title}</DateOfAMatchTitle>
+          </DateOfAMatch>
         )}
+        ItemSeparatorComponent={Divider}
       />
     </Container>
   )
