@@ -1,6 +1,8 @@
 import { FlatList } from "react-native"
+import { useTheme } from "styled-components/native"
 import { useNavigation } from "@react-navigation/native"
 
+import { Icon } from "@/components/Icon"
 import { Select } from "@/components/Select"
 import { Divider } from "@/components/Divider"
 
@@ -68,10 +70,11 @@ const daysMatches: DaysMatchProps[] = [
 ]
 
 export function History() {
+  const { colors } = useTheme()
   const navigation = useNavigation()
 
-  function handleNavigate() {
-    navigation.navigate("Test")
+  function handleNavigateToMatches() {
+    navigation.navigate("Matches")
   }
 
   return (
@@ -82,11 +85,13 @@ export function History() {
         data={daysMatches}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item }) => (
-          <DateOfAMatch onPress={handleNavigate}>
+          <DateOfAMatch onPress={handleNavigateToMatches}>
             <DateOfAMatchTitle>{item?.title}</DateOfAMatchTitle>
+            <Icon name="ChevronRight" color={colors.slate[400]} />
           </DateOfAMatch>
         )}
         ItemSeparatorComponent={Divider}
+        showsVerticalScrollIndicator={false}
       />
     </Container>
   )

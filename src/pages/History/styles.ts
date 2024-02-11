@@ -14,6 +14,10 @@ export const DateOfAMatch = styled.TouchableOpacity.attrs(() => ({
   width: 100%;
   padding: 8px 16px;
   background-color: ${(props) => props.theme.colors.gray[800]};
+
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 `
 
 export const DateOfAMatchTitle = styled.Text`
