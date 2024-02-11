@@ -8,7 +8,7 @@ interface SelectProps {}
 export function Select({ ...rest }: SelectProps) {
   const theme = useTheme()
 
-  const [selectedValue, setSelectedValue] = useState("")
+  const [selectedValue, setSelectedValue] = useState("one")
 
   return (
     <Picker
@@ -23,8 +23,8 @@ export function Select({ ...rest }: SelectProps) {
       dropdownIconColor={theme.colors.slate[500]}
       placeholder="Selecione uma data..."
     >
-      <Picker.Item label="Java" value="java" />
-      <Picker.Item label="JavaScript" value="js" />
+      <Picker.Item label="11/02/2024" value="one" />
+      <Picker.Item label="20/02/2024" value="two" />
     </Picker>
   )
 }

@@ -6,7 +6,7 @@ export const ContainerOption = styled.TouchableOpacity.attrs(() => ({
   flex-direction: row;
   align-items: center;
   gap: 8px;
-  opacity: ${(props) => (props.disabled ? 0.3 : 1)};
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
 `
 
 export const OptionLabel = styled.Text`
