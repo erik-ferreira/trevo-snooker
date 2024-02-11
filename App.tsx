@@ -13,11 +13,14 @@ import {
   JetBrainsMono_400Regular,
   JetBrainsMono_700Bold,
 } from "@expo-google-fonts/jetbrains-mono"
+import Toast from "react-native-toast-message"
 import { ThemeProvider } from "styled-components/native"
 import { NavigationContainer } from "@react-navigation/native"
 
 import { StackRoutes } from "@/routes/stack.routes"
+
 import { defaultTheme } from "@/theme/default"
+import { toastConfig } from "@/config/toastConfig"
 
 export default function App() {
   let [fontsLoaded, fontError] = useFonts({
@@ -38,6 +41,7 @@ export default function App() {
     <ThemeProvider theme={defaultTheme}>
       <NavigationContainer>
         <StackRoutes />
+        <Toast config={toastConfig} />
         <StatusBar style="light" />
       </NavigationContainer>
     </ThemeProvider>

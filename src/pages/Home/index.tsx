@@ -1,5 +1,6 @@
 import { useState } from "react"
 import Modal from "react-native-modal"
+import ToastD from "react-native-toast-message"
 import { Image, FlatList } from "react-native"
 
 import { Player } from "@/components/Player"
@@ -81,13 +82,41 @@ const players = [
   },
 ]
 
+type WinnerPlayerProps = "player-one" | "player-two" | null
+type OptionMatchProps = "is-capote" | "is-suicide" | null
+
 export function Home() {
   const currentDate = getCurrentDate()
 
   const [visibleModal, setVisibleModal] = useState(false)
+  const [winnerPlayer, setWinnerPlayer] = useState<WinnerPlayerProps>(null)
+  const [optionMatch, setOptionMatch] = useState<OptionMatchProps>(null)
+
+  function handleShowModal() {
+    setVisibleModal(true)
+  }
 
   function handleCloseModal() {
     setVisibleModal(false)
+  }
+
+  function handleChangeWinnerPlayer(winner: WinnerPlayerProps) {
+    setWinnerPlayer((prevState) => (prevState === winner ? null : winner))
+  }
+
+  function handleChangeOptionMatch(option: OptionMatchProps) {
+    setOptionMatch((prevState) => (prevState === option ? null : option))
+  }
+
+  function handleSaveMatch() {
+    if (!winnerPlayer) {
+      ToastD.show({
+        type: "info",
+        text1: "Ops...",
+        text2: "Selecione o jogador que venceu a partida para salvar",
+        visibilityTime: 10000,
+      })
+    }
   }
 
   return (
@@ -95,21 +124,35 @@ export function Home() {
       <DateToday>{currentDate}</DateToday>
 
       <ContentMatchesList>
-        <PlayerOfTheMatch onLongPress={() => setVisibleModal(true)} />
+        <PlayerOfTheMatch
+          variant="player-one"
+          onLongPress={handleShowModal}
+          isWinner={winnerPlayer === "player-one"}
+          onPress={() => handleChangeWinnerPlayer("player-one")}
+        />
         <Image source={vs} width={50} />
         <PlayerOfTheMatch
           variant="player-two"
-          isWinner
-          onLongPress={() => setVisibleModal(true)}
+          onLongPress={handleShowModal}
+          isWinner={winnerPlayer === "player-two"}
+          onPress={() => handleChangeWinnerPlayer("player-two")}
         />
       </ContentMatchesList>
 
       <ContentOptions>
-        <Option />
-        <Option label="Suicídio" />
+        <Option
+          label="Capote"
+          isChecked={optionMatch === "is-capote"}
+          onPress={() => handleChangeOptionMatch("is-capote")}
+        />
+        <Option
+          label="Suicídio"
+          isChecked={optionMatch === "is-suicide"}
+          onPress={() => handleChangeOptionMatch("is-suicide")}
+        />
       </ContentOptions>
 
-      <Button label="Salvar" />
+      <Button label="Salvar" onPress={handleSaveMatch} />
 
       <Modal
         isVisible={visibleModal}
