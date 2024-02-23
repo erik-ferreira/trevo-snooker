@@ -4,6 +4,20 @@ import { BoxCheck } from "@/components/BoxCheck"
 
 import { PlayerDTO } from "@/dtos/PlayerDTO"
 
+import antonio from "@/assets/antonio.png"
+import breno from "@/assets/breno.png"
+import david from "@/assets/david.png"
+import erik from "@/assets/erik.png"
+
+const imagesProfile = {
+  antonio,
+  breno,
+  david,
+  erik,
+} as const
+
+type VariantsImagesProfile = keyof typeof imagesProfile
+
 import {
   ContentImagePlayer,
   ContentImagePlayerProps,
@@ -19,12 +33,14 @@ type PlayerOfTheMatchProps = TouchableOpacityProps &
   }
 
 export function PlayerOfTheMatch({
-  variant = "player-one",
+  variant = "playerOne",
   isWinner = false,
   isReadOnly = false,
   player,
   ...rest
 }: PlayerOfTheMatchProps) {
+  const imageSource = imagesProfile[player.slugAvatar as VariantsImagesProfile]
+
   return (
     <PlayerOfTheMatchContainer
       variant={variant}
@@ -32,7 +48,7 @@ export function PlayerOfTheMatch({
       {...rest}
     >
       <ContentImagePlayer isWinner={isWinner}>
-        <Image source={player.avatarUrl} width={80} height={80} />
+        <Image source={imageSource} width={80} height={80} />
       </ContentImagePlayer>
 
       {!isReadOnly && <BoxCheck showCheck={isWinner} />}

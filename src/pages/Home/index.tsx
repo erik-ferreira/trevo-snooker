@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { format } from "date-fns"
 import Modal from "react-native-modal"
 import Toast from "react-native-toast-message"
 import { Image, FlatList } from "react-native"
@@ -14,8 +15,6 @@ import { players } from "@/defaults/players"
 
 import { MatchDTO } from "@/dtos/MatchDTO"
 import { PlayerDTO } from "@/dtos/PlayerDTO"
-
-import { getCurrentDate } from "@/utils/getCurrentDate"
 
 import vs from "@/assets/vs.png"
 
@@ -35,196 +34,40 @@ import {
   ModalBodyStyle,
 } from "./styles"
 
-type WinnerPlayerProps = "player-one" | "player-two" | null
-type OptionMatchProps = "is-capote" | "is-suicide" | null
-type PlayerPressProps = "player-one" | "player-two"
-
-interface ModalProps {
-  visibleModal: boolean
-  playerPress: PlayerPressProps
-}
-
 export function Home() {
-  const currentDate = getCurrentDate()
+  const currentDate = format(new Date(), "dd/MM/yyyy")
   const totalPlayers = players.length
 
-  const [modalProps, setModalProps] = useState<ModalProps>({
-    playerPress: "player-one",
-    visibleModal: false,
-  })
-  const [winnerPlayer, setWinnerPlayer] = useState<WinnerPlayerProps>(null)
-  const [optionMatch, setOptionMatch] = useState<OptionMatchProps>(null)
-  const [playerOne, setPlayerOne] = useState<PlayerDTO>(players[0])
-  const [playerTwo, setPlayerTwo] = useState<PlayerDTO>(players[1])
+  const playerOne = {
+    id: "f517ea00-9341-427f-ab38-6ee4c4c9a3f6",
+    name: "Antonio Gomes",
+    slugAvatar: "antonio",
+    createdAt: new Date("2024-02-23T01:56:05.286Z"),
+  } as PlayerDTO
 
-  function handleShowModal(playerPress: PlayerPressProps) {
-    setModalProps({
-      playerPress,
-      visibleModal: true,
-    })
-  }
-
-  function handleCloseModal() {
-    setModalProps((prevState) => ({ ...prevState, visibleModal: false }))
-  }
-
-  function handleChangeWinnerPlayer(winner: WinnerPlayerProps) {
-    setWinnerPlayer((prevState) => (prevState === winner ? null : winner))
-  }
-
-  function handleChangeOptionMatch(option: OptionMatchProps) {
-    setOptionMatch((prevState) => (prevState === option ? null : option))
-  }
-
-  function handleUpdatePlayerInMatcher(player: PlayerDTO) {
-    if (modalProps.playerPress === "player-one") {
-      setPlayerOne(player)
-    } else {
-      setPlayerTwo(player)
-    }
-
-    handleCloseModal()
-  }
-
-  async function handleSaveMatch() {
-    if (!winnerPlayer) {
-      return Toast.show({
-        type: "info",
-        text1: "Ops...",
-        text2: "Selecione o jogador que venceu a partida para salvar",
-        visibilityTime: 2000,
-      })
-    }
-
-    const key = "@trevo-snooker"
-
-    const newMatch: MatchDTO = {
-      id: Math.random(),
-      playerOneId: playerOne.id,
-      playerTwoId: playerTwo.id,
-      playerWinnerId:
-        winnerPlayer === "player-one" ? playerOne.id : playerTwo.id,
-      isCapote: optionMatch === "is-capote",
-      isSuicide: optionMatch === "is-suicide",
-      createdAt: new Date(),
-    }
-
-    let matches: MatchDTO[] = []
-
-    try {
-      const value = await AsyncStorage.getItem(key)
-
-      if (!value) {
-        await AsyncStorage.setItem(key, JSON.stringify(matches))
-      } else {
-        matches = JSON.parse(value)
-      }
-
-      matches = [...matches, newMatch]
-
-      // console.log("matches", matches)
-
-      await AsyncStorage.setItem(key, JSON.stringify(matches))
-
-      Toast.show({
-        type: "success",
-        text1: "Show",
-        text2: "Partida cadastrada com sucesso!",
-        visibilityTime: 2000,
-      })
-
-      setWinnerPlayer(null)
-      setOptionMatch(null)
-    } catch (e) {
-      Toast.show({
-        type: "error",
-        text1: "Ops...",
-        text2: "Não foi possível criar uma partida",
-        visibilityTime: 2000,
-      })
-      console.log("problem", e)
-    }
-  }
-
-  // async function handleTeste() {
-  //   const value = await AsyncStorage.getItem("@trevo-snooker")
-  //   const listValue = value ? JSON.parse(value) : []
-
-  //   listValue.map((val: MatchDTO, index: number) => {
-  //     console.log(index + 1, " - ", JSON.stringify(val, null, 2))
-  //   })
-  // }
+  const playerTwo = {
+    id: "ba684a94-f746-443d-b09b-a19edb8bb732",
+    name: "Breno Alves",
+    slugAvatar: "breno",
+    createdAt: new Date("2024-02-23T01:56:05.286Z"),
+  } as PlayerDTO
 
   return (
     <Container>
       <DateToday>{currentDate}</DateToday>
 
       <ContentMatchesList>
-        <PlayerOfTheMatch
-          player={playerOne}
-          variant="player-one"
-          onLongPress={() => handleShowModal("player-one")}
-          isWinner={winnerPlayer === "player-one"}
-          onPress={() => handleChangeWinnerPlayer("player-one")}
-        />
+        <PlayerOfTheMatch player={playerOne} variant="playerOne" />
         <Image source={vs} width={50} />
-        <PlayerOfTheMatch
-          player={playerTwo}
-          variant="player-two"
-          onLongPress={() => handleShowModal("player-two")}
-          isWinner={winnerPlayer === "player-two"}
-          onPress={() => handleChangeWinnerPlayer("player-two")}
-        />
+        <PlayerOfTheMatch player={playerTwo} variant="playerTwo" />
       </ContentMatchesList>
 
       <ContentOptions>
-        <Option
-          label="Capote"
-          isChecked={optionMatch === "is-capote"}
-          onPress={() => handleChangeOptionMatch("is-capote")}
-        />
-        <Option
-          label="Suicídio"
-          isChecked={optionMatch === "is-suicide"}
-          onPress={() => handleChangeOptionMatch("is-suicide")}
-        />
+        <Option label="Capote" />
+        <Option label="Suicídio" />
       </ContentOptions>
 
-      <Button label="Salvar" onPress={handleSaveMatch} />
-      {/* <Button label="Test" onPress={handleTeste} /> */}
-
-      <Modal
-        isVisible={modalProps.visibleModal}
-        onSwipeComplete={handleCloseModal}
-        onBackButtonPress={handleCloseModal}
-        onBackdropPress={handleCloseModal}
-        style={ModalStyle}
-        statusBarTranslucent
-        swipeDirection={["down"]}
-      >
-        <ModalContent>
-          <ModalPicker />
-
-          <ModalHeader>
-            <ModalTitle>Jogadores</ModalTitle>
-            <NumberOfPlayers>Total {totalPlayers}</NumberOfPlayers>
-          </ModalHeader>
-
-          <FlatList
-            data={players}
-            keyExtractor={(item) => item.id.toString()}
-            ItemSeparatorComponent={Divider}
-            renderItem={({ item }) => (
-              <Player
-                player={item}
-                disabled={item.id === playerOne.id || item.id === playerTwo.id}
-                onPress={() => handleUpdatePlayerInMatcher(item)}
-              />
-            )}
-            contentContainerStyle={ModalBodyStyle}
-          />
-        </ModalContent>
-      </Modal>
+      <Button label="Salvar" />
     </Container>
   )
 }

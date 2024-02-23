@@ -1,9 +1,9 @@
 export interface MatchDTO {
-  id: number
-  playerOneId: number
-  playerTwoId: number
-  playerWinnerId: number
-  isCapote: boolean
-  isSuicide: boolean
+  id: string
+  isCapote: false
+  isSuicide: false
   createdAt: Date
+  winnerPlayerId: string
 }
+
+export type MatchesDates = Pick<MatchDTO, "id" | "createdAt">

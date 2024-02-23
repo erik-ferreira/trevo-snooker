@@ -1,10 +1,16 @@
-import { ImageSourcePropType } from "react-native"
-
-import { MatchDTO } from "./MatchDTO"
+import { StatisticsDTO } from "./StatisticsDTO"
 
 export interface PlayerDTO {
-  id: number
+  id: string
   name: string
-  avatarUrl: ImageSourcePropType
-  matches: MatchDTO[]
+  slugAvatar: string
+  createdAt: Date
+}
+
+export interface PlayerWithQuantityMatchesProps extends PlayerDTO {
+  numberOfMatchesPlayed: number
+}
+
+export interface PlayerStatisticsProps extends PlayerDTO {
+  statistics: StatisticsDTO
 }
