@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { format } from "date-fns"
 import Modal from "react-native-modal"
 import Toast from "react-native-toast-message"
@@ -11,10 +11,8 @@ import { Option } from "@/components/Option"
 import { Divider } from "@/components/Divider"
 import { PlayerOfTheMatch } from "@/components/PlayerOfTheMatch"
 
-import { players } from "@/defaults/players"
-
 import { MatchDTO } from "@/dtos/MatchDTO"
-import { PlayerDTO } from "@/dtos/PlayerDTO"
+import { PlayerDTO, PlayerWithQuantityMatchesProps } from "@/dtos/PlayerDTO"
 
 import vs from "@/assets/vs.png"
 
@@ -33,9 +31,12 @@ import {
   NumberOfPlayers,
   ModalBodyStyle,
 } from "./styles"
+import { api } from "@/services/api"
 
 export function Home() {
   const currentDate = format(new Date(), "dd/MM/yyyy")
+
+  const [players, setPlayers] = useState<PlayerWithQuantityMatchesProps[]>([])
   const totalPlayers = players.length
 
   const playerOne = {
@@ -51,6 +52,16 @@ export function Home() {
     slugAvatar: "breno",
     createdAt: new Date("2024-02-23T01:56:05.286Z"),
   } as PlayerDTO
+
+  async function onGetListPlayers() {
+    const response = await api.get("/players")
+
+    setPlayers(response.data)
+  }
+
+  useEffect(() => {
+    onGetListPlayers()
+  }, [])
 
   return (
     <Container>
