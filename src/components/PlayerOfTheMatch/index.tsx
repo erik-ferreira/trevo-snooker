@@ -39,7 +39,7 @@ export function PlayerOfTheMatch({
   player,
   ...rest
 }: PlayerOfTheMatchProps) {
-  const imageSource = imagesProfile[player.slugAvatar as VariantsImagesProfile]
+  const imageSource = imagesProfile["erik" as VariantsImagesProfile]
 
   return (
     <PlayerOfTheMatchContainer

@@ -41,7 +41,7 @@ import {
 
 interface ModalProps {
   isVisible: boolean
-  playerPressed: "player-one" | "player-two"
+  playerPressed: PlayerPressProps
 }
 
 export function Home() {
@@ -56,16 +56,20 @@ export function Home() {
 
   const [modal, setModal] = useState<ModalProps>({
     isVisible: false,
-    playerPressed: "player-one",
+    playerPressed: "playerOne",
   })
 
-  // const totalPlayers = players.length
+  const totalPlayers = players.length
 
   function handleShowModal(playerPressed: PlayerPressProps) {
     setModal({
       playerPressed,
-      visibleModal: true,
+      isVisible: true,
     })
+  }
+
+  function handleCloseModal() {
+    setModal((prevState) => ({ ...prevState, isVisible: false }))
   }
 
   function handleChangeWinnerPlayer(winner: WinnerPlayerProps) {
@@ -74,6 +78,15 @@ export function Home() {
 
   function handleChangeOptionMatch(option: OptionMatchProps) {
     setOptionMatch((prevState) => (prevState === option ? null : option))
+  }
+
+  function handleSaveMatch() {
+    Toast.show({
+      type: "info",
+      text1: "Ops...",
+      text2: "Selecione o jogador que venceu a partida para salvar",
+      visibilityTime: 10000,
+    })
   }
 
   async function onGetListPlayers() {
@@ -125,13 +138,10 @@ export function Home() {
         />
       </ContentOptions>
 
-      <Button
-        label="Salvar"
-        // onPress={handleSaveMatch}
-      />
+      <Button label="Salvar" onPress={handleSaveMatch} />
 
       <Modal
-        isVisible={modalProps.visibleModal}
+        isVisible={modal.isVisible}
         onSwipeComplete={handleCloseModal}
         onBackButtonPress={handleCloseModal}
         onBackdropPress={handleCloseModal}
@@ -155,7 +165,7 @@ export function Home() {
               <Player
                 player={item}
                 disabled={item.id === playerOne.id || item.id === playerTwo.id}
-                onPress={() => handleUpdatePlayerInMatcher(item)}
+                // onPress={() => handleUpdatePlayerInMatcher(item)}
               />
             )}
             contentContainerStyle={ModalBodyStyle}
