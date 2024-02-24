@@ -14,3 +14,7 @@ export interface PlayerWithQuantityMatchesProps extends PlayerDTO {
 export interface PlayerStatisticsProps extends PlayerDTO {
   statistics: StatisticsDTO
 }
+
+export type WinnerPlayerProps = "playerOne" | "playerTwo" | null
+
+export type PlayerPressProps = "playerOne" | "playerTwo"

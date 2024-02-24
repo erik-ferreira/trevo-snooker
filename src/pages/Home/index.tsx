@@ -5,14 +5,21 @@ import Toast from "react-native-toast-message"
 import { Image, FlatList } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
+import { api } from "@/services/api"
+
 import { Player } from "@/components/Player"
 import { Button } from "@/components/Button"
 import { Option } from "@/components/Option"
 import { Divider } from "@/components/Divider"
 import { PlayerOfTheMatch } from "@/components/PlayerOfTheMatch"
 
-import { MatchDTO } from "@/dtos/MatchDTO"
-import { PlayerDTO, PlayerWithQuantityMatchesProps } from "@/dtos/PlayerDTO"
+import { MatchDTO, OptionMatchProps } from "@/dtos/MatchDTO"
+import {
+  PlayerDTO,
+  PlayerWithQuantityMatchesProps,
+  WinnerPlayerProps,
+  PlayerPressProps,
+} from "@/dtos/PlayerDTO"
 
 import vs from "@/assets/vs.png"
 
@@ -31,27 +38,43 @@ import {
   NumberOfPlayers,
   ModalBodyStyle,
 } from "./styles"
-import { api } from "@/services/api"
+
+interface ModalProps {
+  isVisible: boolean
+  playerPressed: "player-one" | "player-two"
+}
 
 export function Home() {
   const currentDate = format(new Date(), "dd/MM/yyyy")
 
   const [players, setPlayers] = useState<PlayerWithQuantityMatchesProps[]>([])
-  const totalPlayers = players.length
+  const [playerOne, setPlayerOne] = useState<PlayerDTO>(players[0])
+  const [playerTwo, setPlayerTwo] = useState<PlayerDTO>(players[1])
 
-  const playerOne = {
-    id: "f517ea00-9341-427f-ab38-6ee4c4c9a3f6",
-    name: "Antonio Gomes",
-    slugAvatar: "antonio",
-    createdAt: new Date("2024-02-23T01:56:05.286Z"),
-  } as PlayerDTO
+  const [optionMatch, setOptionMatch] = useState<OptionMatchProps>(null)
+  const [winnerPlayer, setWinnerPlayer] = useState<WinnerPlayerProps>(null)
 
-  const playerTwo = {
-    id: "ba684a94-f746-443d-b09b-a19edb8bb732",
-    name: "Breno Alves",
-    slugAvatar: "breno",
-    createdAt: new Date("2024-02-23T01:56:05.286Z"),
-  } as PlayerDTO
+  const [modal, setModal] = useState<ModalProps>({
+    isVisible: false,
+    playerPressed: "player-one",
+  })
+
+  // const totalPlayers = players.length
+
+  function handleShowModal(playerPressed: PlayerPressProps) {
+    setModal({
+      playerPressed,
+      visibleModal: true,
+    })
+  }
+
+  function handleChangeWinnerPlayer(winner: WinnerPlayerProps) {
+    setWinnerPlayer((prevState) => (prevState === winner ? null : winner))
+  }
+
+  function handleChangeOptionMatch(option: OptionMatchProps) {
+    setOptionMatch((prevState) => (prevState === option ? null : option))
+  }
 
   async function onGetListPlayers() {
     const response = await api.get("/players")
@@ -61,6 +84,10 @@ export function Home() {
 
   useEffect(() => {
     onGetListPlayers()
+
+    return () => {
+      setPlayers([])
+    }
   }, [])
 
   return (
@@ -68,17 +95,73 @@ export function Home() {
       <DateToday>{currentDate}</DateToday>
 
       <ContentMatchesList>
-        <PlayerOfTheMatch player={playerOne} variant="playerOne" />
+        <PlayerOfTheMatch
+          player={playerOne}
+          variant="playerOne"
+          isWinner={winnerPlayer === "playerOne"}
+          onLongPress={() => handleShowModal("playerOne")}
+          onPress={() => handleChangeWinnerPlayer("playerOne")}
+        />
         <Image source={vs} width={50} />
-        <PlayerOfTheMatch player={playerTwo} variant="playerTwo" />
+        <PlayerOfTheMatch
+          player={playerTwo}
+          variant="playerTwo"
+          isWinner={winnerPlayer === "playerTwo"}
+          onLongPress={() => handleShowModal("playerTwo")}
+          onPress={() => handleChangeWinnerPlayer("playerTwo")}
+        />
       </ContentMatchesList>
 
       <ContentOptions>
-        <Option label="Capote" />
-        <Option label="Suicídio" />
+        <Option
+          label="Capote"
+          isChecked={optionMatch === "isCapote"}
+          onPress={() => handleChangeOptionMatch("isCapote")}
+        />
+        <Option
+          label="Suicídio"
+          isChecked={optionMatch === "isSuicide"}
+          onPress={() => handleChangeOptionMatch("isSuicide")}
+        />
       </ContentOptions>
 
-      <Button label="Salvar" />
+      <Button
+        label="Salvar"
+        // onPress={handleSaveMatch}
+      />
+
+      <Modal
+        isVisible={modalProps.visibleModal}
+        onSwipeComplete={handleCloseModal}
+        onBackButtonPress={handleCloseModal}
+        onBackdropPress={handleCloseModal}
+        style={ModalStyle}
+        statusBarTranslucent
+        swipeDirection={["down"]}
+      >
+        <ModalContent>
+          <ModalPicker />
+
+          <ModalHeader>
+            <ModalTitle>Jogadores</ModalTitle>
+            <NumberOfPlayers>Total {totalPlayers}</NumberOfPlayers>
+          </ModalHeader>
+
+          <FlatList
+            data={players}
+            keyExtractor={(item) => item.id.toString()}
+            ItemSeparatorComponent={Divider}
+            renderItem={({ item }) => (
+              <Player
+                player={item}
+                disabled={item.id === playerOne.id || item.id === playerTwo.id}
+                onPress={() => handleUpdatePlayerInMatcher(item)}
+              />
+            )}
+            contentContainerStyle={ModalBodyStyle}
+          />
+        </ModalContent>
+      </Modal>
     </Container>
   )
 }

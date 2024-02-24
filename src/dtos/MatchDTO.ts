@@ -7,3 +7,5 @@ export interface MatchDTO {
 }
 
 export type MatchesDates = Pick<MatchDTO, "id" | "createdAt">
+
+export type OptionMatchProps = "isCapote" | "isSuicide" | null
