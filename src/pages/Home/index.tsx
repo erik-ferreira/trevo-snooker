@@ -83,8 +83,7 @@ export function Home() {
   function handleSaveMatch() {
     Toast.show({
       type: "info",
-      text1: "Ops...",
-      text2: "Selecione o jogador que venceu a partida para salvar",
+      text1: "Selecione o jogador que venceu a partida para salvar",
       visibilityTime: 10000,
     })
   }

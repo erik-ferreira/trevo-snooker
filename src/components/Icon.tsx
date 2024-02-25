@@ -1,8 +1,10 @@
 import { useTheme } from "styled-components/native"
 import { icons, LucideProps } from "lucide-react-native"
 
+export type NameIconProps = keyof typeof icons
+
 interface IconProps extends LucideProps {
-  name?: keyof typeof icons
+  name?: NameIconProps
 }
 
 export function Icon({ name = "Home", size, color, ...rest }: IconProps) {

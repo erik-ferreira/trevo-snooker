@@ -1,18 +1,32 @@
-import { View, Text } from "react-native"
+import { useTheme } from "styled-components/native"
 import { ToastConfigParams } from "react-native-toast-message"
 
-import { Icon } from "@/components/Icon"
+import { Icon, NameIconProps } from "@/components/Icon"
 
-import { ToastContainer, ToastContentIcon, ToastLabel } from "./styles"
+import {
+  ToastContainer,
+  ToastContentIcon,
+  ToastContentIconType,
+  ToastLabel,
+} from "./styles"
+
+const variantsIcons: Record<ToastContentIconType, NameIconProps> = {
+  success: "Check",
+  warning: "AlertCircle",
+  error: "X",
+  info: "Info",
+}
 
 interface ToastProps extends ToastConfigParams<any> {}
 
 export function Toast({ ...rest }: ToastProps) {
-  // rest.type
+  const { colors } = useTheme()
+  const nameIcon = variantsIcons[rest.type]
+
   return (
     <ToastContainer>
-      <ToastContentIcon>
-        <Icon name="Check" />
+      <ToastContentIcon type={rest.type}>
+        <Icon name={nameIcon} color={colors.black} />
       </ToastContentIcon>
       <ToastLabel>{rest.text1}</ToastLabel>
     </ToastContainer>
