@@ -11,12 +11,6 @@ export const ContainerPlayer = styled.TouchableOpacity`
     `}
 `
 
-export const ContentPlayerAvatar = styled.View`
-  overflow: hidden;
-  border-radius: 40px;
-  border: 2px solid ${(props) => props.theme.colors.slate[400]};
-`
-
 export const ContentPlayerDescriptions = styled.View`
   gap: 4px;
 `
