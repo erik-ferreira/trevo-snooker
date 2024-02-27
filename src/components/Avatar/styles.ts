@@ -2,13 +2,11 @@ import { ViewProps } from "react-native"
 import styled, { css } from "styled-components/native"
 
 export interface ContainerAvatarProps extends ViewProps {
-  // isWinner?: boolean
+  isWinner?: boolean
   isListPlayer?: boolean
 }
 
 export const ContainerAvatar = styled.View<ContainerAvatarProps>`
-  width: 80px;
-  height: 80px;
   overflow: hidden;
   border-radius: 50px;
 
@@ -18,5 +16,11 @@ export const ContainerAvatar = styled.View<ContainerAvatarProps>`
     props.isListPlayer &&
     css`
       border-color: ${props.theme.colors.slate[400]};
+    `}
+
+  ${(props) =>
+    props.isWinner &&
+    css`
+      border-color: ${props.theme.colors.emerald[500]};
     `}
 `

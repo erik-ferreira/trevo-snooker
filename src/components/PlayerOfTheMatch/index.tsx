@@ -1,25 +1,11 @@
-import { TouchableOpacityProps, Image, ImageSourcePropType } from "react-native"
+import { TouchableOpacityProps } from "react-native"
 
+import { Avatar } from "@/components/Avatar"
 import { BoxCheck } from "@/components/BoxCheck"
 
 import { PlayerDTO } from "@/dtos/PlayerDTO"
 
-import antonio from "@/assets/antonio.png"
-import breno from "@/assets/breno.png"
-import david from "@/assets/david.png"
-import erik from "@/assets/erik.png"
-
-const imagesProfile = {
-  antonio,
-  breno,
-  david,
-  erik,
-} as const
-
-type VariantsImagesProfile = keyof typeof imagesProfile
-
 import {
-  ContentImagePlayer,
   ContentImagePlayerProps,
   PlayerOfTheMatchContainer,
   PlayerOfTheMatchContainerProps,
@@ -39,17 +25,13 @@ export function PlayerOfTheMatch({
   player,
   ...rest
 }: PlayerOfTheMatchProps) {
-  const imageSource = imagesProfile["erik" as VariantsImagesProfile]
-
   return (
     <PlayerOfTheMatchContainer
       variant={variant}
       disabled={isReadOnly || rest.disabled}
       {...rest}
     >
-      <ContentImagePlayer isWinner={isWinner}>
-        <Image source={imageSource} width={80} height={80} />
-      </ContentImagePlayer>
+      <Avatar slugAvatar={player.slugAvatar} isWinner={isWinner} />
 
       {!isReadOnly && <BoxCheck showCheck={isWinner} />}
     </PlayerOfTheMatchContainer>

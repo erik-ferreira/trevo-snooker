@@ -17,11 +17,3 @@ export const PlayerOfTheMatchContainer = styled.TouchableOpacity.attrs(() => ({
   justify-content: center;
   gap: 8px;
 `
-
-export const ContentImagePlayer = styled.View<ContentImagePlayerProps>`
-  overflow: hidden;
-  border-radius: 40px;
-  border: 2px solid
-    ${(props) =>
-      props.isWinner ? props.theme.colors.emerald[500] : "transparent"};
-`
