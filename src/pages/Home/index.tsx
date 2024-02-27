@@ -90,12 +90,43 @@ export function Home() {
     handleCloseModal()
   }
 
-  function handleSaveMatch() {
-    Toast.show({
-      type: "info",
-      text1: "Selecione o jogador que venceu a partida para salvar",
-      visibilityTime: 10000,
-    })
+  async function handleSaveMatch() {
+    if (!winnerPlayer) {
+      return Toast.show({
+        type: "info",
+        text1: "Selecione o jogador que venceu a partida para salvar",
+        visibilityTime: 2000,
+      })
+    }
+
+    try {
+      const winnerPlayerId =
+        winnerPlayer === "playerOne" ? playerOne.id : playerTwo.id
+
+      const data = {
+        isCapote: optionMatch === "isCapote",
+        isSuicide: optionMatch === "isSuicide",
+        winnerPlayerId,
+        playersIds: [playerOne.id, playerTwo.id],
+      }
+
+      const response = await api.post("/matches", data)
+
+      if (response.status === 201) {
+        Toast.show({
+          type: "success",
+          text1: "Partida criada com sucesso",
+          visibilityTime: 2000,
+        })
+      }
+    } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "Não foi possível salvar a partida",
+        visibilityTime: 2000,
+      })
+      console.log("problem", e)
+    }
   }
 
   async function onGetListPlayers() {
