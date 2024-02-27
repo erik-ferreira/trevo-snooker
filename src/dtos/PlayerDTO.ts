@@ -4,7 +4,7 @@ export interface PlayerDTO {
   id: string
   name: string
   slugAvatar: string
-  createdAt: Date
+  createdAt: string
 }
 
 export interface PlayerWithQuantityMatchesProps extends PlayerDTO {

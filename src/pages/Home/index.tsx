@@ -1,7 +1,6 @@
 import { format } from "date-fns"
 import Modal from "react-native-modal"
 import { useEffect, useState } from "react"
-import Toast from "react-native-toast-message"
 import { useTheme } from "styled-components/native"
 import { Image, FlatList, ActivityIndicator } from "react-native"
 
