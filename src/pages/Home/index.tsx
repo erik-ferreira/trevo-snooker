@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react"
 import { format } from "date-fns"
 import Modal from "react-native-modal"
+import { useEffect, useState } from "react"
 import Toast from "react-native-toast-message"
-import { Image, FlatList } from "react-native"
-import AsyncStorage from "@react-native-async-storage/async-storage"
+import { Image, FlatList, Text } from "react-native"
 
 import { api } from "@/services/api"
 
@@ -13,13 +12,12 @@ import { Option } from "@/components/Option"
 import { Divider } from "@/components/Divider"
 import { PlayerOfTheMatch } from "@/components/PlayerOfTheMatch"
 
-import { MatchDTO, OptionMatchProps } from "@/dtos/MatchDTO"
 import {
-  PlayerDTO,
   PlayerWithQuantityMatchesProps,
   WinnerPlayerProps,
   PlayerPressProps,
 } from "@/dtos/PlayerDTO"
+import { OptionMatchProps } from "@/dtos/MatchDTO"
 
 import vs from "@/assets/vs.png"
 
@@ -48,8 +46,12 @@ export function Home() {
   const currentDate = format(new Date(), "dd/MM/yyyy")
 
   const [players, setPlayers] = useState<PlayerWithQuantityMatchesProps[]>([])
-  const [playerOne, setPlayerOne] = useState<PlayerDTO>(players[0])
-  const [playerTwo, setPlayerTwo] = useState<PlayerDTO>(players[1])
+  const [playerOne, setPlayerOne] = useState<PlayerWithQuantityMatchesProps>(
+    players[0]
+  )
+  const [playerTwo, setPlayerTwo] = useState<PlayerWithQuantityMatchesProps>(
+    players[1]
+  )
 
   const [optionMatch, setOptionMatch] = useState<OptionMatchProps>(null)
   const [winnerPlayer, setWinnerPlayer] = useState<WinnerPlayerProps>(null)
@@ -58,8 +60,6 @@ export function Home() {
     isVisible: false,
     playerPressed: "playerOne",
   })
-
-  const totalPlayers = players.length
 
   function handleShowModal(playerPressed: PlayerPressProps) {
     setModal({
@@ -80,6 +80,16 @@ export function Home() {
     setOptionMatch((prevState) => (prevState === option ? null : option))
   }
 
+  function handleUpdatePlayerInMatcher(player: PlayerWithQuantityMatchesProps) {
+    if (modal.playerPressed === "playerOne") {
+      setPlayerOne(player)
+    } else {
+      setPlayerTwo(player)
+    }
+
+    handleCloseModal()
+  }
+
   function handleSaveMatch() {
     Toast.show({
       type: "info",
@@ -91,15 +101,13 @@ export function Home() {
   async function onGetListPlayers() {
     const response = await api.get("/players")
 
-    setPlayers(response.data)
+    setPlayers(response.data.players)
+    setPlayerOne(response.data.players[0])
+    setPlayerTwo(response.data.players[1])
   }
 
   useEffect(() => {
     onGetListPlayers()
-
-    return () => {
-      setPlayers([])
-    }
   }, [])
 
   return (
@@ -153,18 +161,18 @@ export function Home() {
 
           <ModalHeader>
             <ModalTitle>Jogadores</ModalTitle>
-            <NumberOfPlayers>Total {totalPlayers}</NumberOfPlayers>
+            <NumberOfPlayers>Total {players.length}</NumberOfPlayers>
           </ModalHeader>
 
           <FlatList
             data={players}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => item.id}
             ItemSeparatorComponent={Divider}
             renderItem={({ item }) => (
               <Player
                 player={item}
                 disabled={item.id === playerOne.id || item.id === playerTwo.id}
-                // onPress={() => handleUpdatePlayerInMatcher(item)}
+                onPress={() => handleUpdatePlayerInMatcher(item)}
               />
             )}
             contentContainerStyle={ModalBodyStyle}

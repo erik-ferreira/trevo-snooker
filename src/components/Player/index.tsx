@@ -1,6 +1,11 @@
-import { TouchableOpacityProps, Image } from "react-native"
+import { TouchableOpacityProps, Image, View, Text } from "react-native"
 
-import { PlayerDTO } from "@/dtos/PlayerDTO"
+import { PlayerWithQuantityMatchesProps } from "@/dtos/PlayerDTO"
+
+import antonio from "@/assets/antonio.png"
+import breno from "@/assets/breno.png"
+import david from "@/assets/david.png"
+import erik from "@/assets/erik.png"
 
 import {
   ContainerPlayer,
@@ -10,12 +15,19 @@ import {
   NumberOfMatchesPlayed,
 } from "./styles"
 
+const sourcesAvatar = {
+  antonio: antonio,
+  breno: breno,
+  david: david,
+  erik: erik,
+}
+
 interface PlayerProps extends TouchableOpacityProps {
-  player: PlayerDTO
+  player: PlayerWithQuantityMatchesProps
 }
 
 export function Player({ player, ...rest }: PlayerProps) {
-  const numberOfMatchesPlayed = player.matches.length
+  const { numberOfMatchesPlayed, slugAvatar } = player
 
   let formatDescriptionByNumberOfMatchesPlayed = `${numberOfMatchesPlayed} partidas jogadas`
 
@@ -25,10 +37,12 @@ export function Player({ player, ...rest }: PlayerProps) {
     formatDescriptionByNumberOfMatchesPlayed = `${numberOfMatchesPlayed} partida jogada`
   }
 
+  // const source = slugAvatar
+
   return (
     <ContainerPlayer {...rest}>
       <ContentPlayerAvatar>
-        <Image source={player.avatarUrl} width={80} height={80} />
+        <Image source={erik} width={80} height={80} />
       </ContentPlayerAvatar>
 
       <ContentPlayerDescriptions>
