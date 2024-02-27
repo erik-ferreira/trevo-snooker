@@ -20,6 +20,8 @@ import {
 } from "@/dtos/PlayerDTO"
 import { OptionMatchProps } from "@/dtos/MatchDTO"
 
+import { showToast } from "@/utils/showToast"
+
 import vs from "@/assets/vs.png"
 
 import {
@@ -99,11 +101,9 @@ export function Home() {
 
   async function handleSaveMatch() {
     if (!winnerPlayer) {
-      return Toast.show({
-        type: "info",
-        text1: "Selecione o jogador que venceu a partida para salvar",
-        visibilityTime: 2000,
-      })
+      return showToast.info(
+        "Selecione o jogador que venceu a partida para salvar"
+      )
     }
 
     try {
@@ -120,18 +120,13 @@ export function Home() {
       const response = await api.post("/matches", data)
 
       if (response.status === 201) {
-        Toast.show({
-          type: "success",
-          text1: "Partida criada com sucesso",
-          visibilityTime: 2000,
-        })
+        showToast.success("Partida criada com sucesso")
       }
+
+      setOptionMatch(null)
+      setWinnerPlayer(null)
     } catch (e) {
-      Toast.show({
-        type: "error",
-        text1: "Não foi possível salvar a partida",
-        visibilityTime: 2000,
-      })
+      showToast.error("Não foi possível salvar a partida")
       console.log("problem", e)
     }
   }
@@ -146,11 +141,7 @@ export function Home() {
       setPlayerOne(response.data.players[0])
       setPlayerTwo(response.data.players[1])
     } catch (err) {
-      Toast.show({
-        type: "error",
-        text1: "Não foi possível carregar a lista de jogadores",
-        visibilityTime: 2000,
-      })
+      showToast.error("Não foi possível carregar a lista de jogadores")
     } finally {
       setLoadingPlayers(false)
     }
