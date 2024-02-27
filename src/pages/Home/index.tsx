@@ -2,7 +2,8 @@ import { format } from "date-fns"
 import Modal from "react-native-modal"
 import { useEffect, useState } from "react"
 import Toast from "react-native-toast-message"
-import { Image, FlatList, Text } from "react-native"
+import { useTheme } from "styled-components/native"
+import { Image, FlatList, ActivityIndicator } from "react-native"
 
 import { api } from "@/services/api"
 
@@ -25,6 +26,7 @@ import {
   // page
   Container,
   DateToday,
+  NotFoundPlayers,
   ContentMatchesList,
   ContentOptions,
   // modal
@@ -37,21 +39,26 @@ import {
   ModalBodyStyle,
 } from "./styles"
 
+interface ReturnGetListPlayers {
+  players: PlayerWithQuantityMatchesProps[]
+}
+
 interface ModalProps {
   isVisible: boolean
   playerPressed: PlayerPressProps
 }
 
 export function Home() {
+  const { colors } = useTheme()
+
   const currentDate = format(new Date(), "dd/MM/yyyy")
 
   const [players, setPlayers] = useState<PlayerWithQuantityMatchesProps[]>([])
-  const [playerOne, setPlayerOne] = useState<PlayerWithQuantityMatchesProps>(
-    players[0]
-  )
-  const [playerTwo, setPlayerTwo] = useState<PlayerWithQuantityMatchesProps>(
-    players[1]
-  )
+  const [playerOne, setPlayerOne] =
+    useState<PlayerWithQuantityMatchesProps | null>(null)
+  const [playerTwo, setPlayerTwo] =
+    useState<PlayerWithQuantityMatchesProps | null>(null)
+  const [loadingPlayers, setLoadingPlayers] = useState(false)
 
   const [optionMatch, setOptionMatch] = useState<OptionMatchProps>(null)
   const [winnerPlayer, setWinnerPlayer] = useState<WinnerPlayerProps>(null)
@@ -101,13 +108,13 @@ export function Home() {
 
     try {
       const winnerPlayerId =
-        winnerPlayer === "playerOne" ? playerOne.id : playerTwo.id
+        winnerPlayer === "playerOne" ? playerOne?.id : playerTwo?.id
 
       const data = {
         isCapote: optionMatch === "isCapote",
         isSuicide: optionMatch === "isSuicide",
         winnerPlayerId,
-        playersIds: [playerOne.id, playerTwo.id],
+        playersIds: [playerOne?.id, playerTwo?.id],
       }
 
       const response = await api.post("/matches", data)
@@ -130,11 +137,23 @@ export function Home() {
   }
 
   async function onGetListPlayers() {
-    const response = await api.get("/players")
+    try {
+      setLoadingPlayers(true)
 
-    setPlayers(response.data.players)
-    setPlayerOne(response.data.players[0])
-    setPlayerTwo(response.data.players[1])
+      const response = await api.get<ReturnGetListPlayers>("/players")
+
+      setPlayers(response.data.players)
+      setPlayerOne(response.data.players[0])
+      setPlayerTwo(response.data.players[1])
+    } catch (err) {
+      Toast.show({
+        type: "error",
+        text1: "Não foi possível carregar a lista de jogadores",
+        visibilityTime: 2000,
+      })
+    } finally {
+      setLoadingPlayers(false)
+    }
   }
 
   useEffect(() => {
@@ -143,40 +162,48 @@ export function Home() {
 
   return (
     <Container>
-      <DateToday>{currentDate}</DateToday>
+      {loadingPlayers ? (
+        <ActivityIndicator size="large" color={colors.blue[500]} />
+      ) : players.length === 0 ? (
+        <NotFoundPlayers>Nenhum jogador encontrado</NotFoundPlayers>
+      ) : (
+        <>
+          <DateToday>{currentDate}</DateToday>
 
-      <ContentMatchesList>
-        <PlayerOfTheMatch
-          player={playerOne}
-          variant="playerOne"
-          isWinner={winnerPlayer === "playerOne"}
-          onLongPress={() => handleShowModal("playerOne")}
-          onPress={() => handleChangeWinnerPlayer("playerOne")}
-        />
-        <Image source={vs} width={50} />
-        <PlayerOfTheMatch
-          player={playerTwo}
-          variant="playerTwo"
-          isWinner={winnerPlayer === "playerTwo"}
-          onLongPress={() => handleShowModal("playerTwo")}
-          onPress={() => handleChangeWinnerPlayer("playerTwo")}
-        />
-      </ContentMatchesList>
+          <ContentMatchesList>
+            <PlayerOfTheMatch
+              player={playerOne}
+              variant="playerOne"
+              isWinner={winnerPlayer === "playerOne"}
+              onLongPress={() => handleShowModal("playerOne")}
+              onPress={() => handleChangeWinnerPlayer("playerOne")}
+            />
+            <Image source={vs} width={50} />
+            <PlayerOfTheMatch
+              player={playerTwo}
+              variant="playerTwo"
+              isWinner={winnerPlayer === "playerTwo"}
+              onLongPress={() => handleShowModal("playerTwo")}
+              onPress={() => handleChangeWinnerPlayer("playerTwo")}
+            />
+          </ContentMatchesList>
 
-      <ContentOptions>
-        <Option
-          label="Capote"
-          isChecked={optionMatch === "isCapote"}
-          onPress={() => handleChangeOptionMatch("isCapote")}
-        />
-        <Option
-          label="Suicídio"
-          isChecked={optionMatch === "isSuicide"}
-          onPress={() => handleChangeOptionMatch("isSuicide")}
-        />
-      </ContentOptions>
+          <ContentOptions>
+            <Option
+              label="Capote"
+              isChecked={optionMatch === "isCapote"}
+              onPress={() => handleChangeOptionMatch("isCapote")}
+            />
+            <Option
+              label="Suicídio"
+              isChecked={optionMatch === "isSuicide"}
+              onPress={() => handleChangeOptionMatch("isSuicide")}
+            />
+          </ContentOptions>
 
-      <Button label="Salvar" onPress={handleSaveMatch} />
+          <Button label="Salvar" onPress={handleSaveMatch} />
+        </>
+      )}
 
       <Modal
         isVisible={modal.isVisible}
@@ -202,7 +229,9 @@ export function Home() {
             renderItem={({ item }) => (
               <Player
                 player={item}
-                disabled={item.id === playerOne.id || item.id === playerTwo.id}
+                disabled={
+                  item.id === playerOne?.id || item.id === playerTwo?.id
+                }
                 onPress={() => handleUpdatePlayerInMatcher(item)}
               />
             )}

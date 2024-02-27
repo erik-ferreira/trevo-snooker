@@ -20,7 +20,7 @@ const sourcesAvatar: Record<SourceName, ImageSourcePropType> = {
   erik: erik,
 }
 
-export function Avatar({ slugAvatar = "default", ...rest }: AvatarProps) {
+export function Avatar({ slugAvatar, ...rest }: AvatarProps) {
   const source = sourcesAvatar[slugAvatar as SourceName]
 
   return (

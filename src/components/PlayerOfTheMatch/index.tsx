@@ -15,7 +15,7 @@ type PlayerOfTheMatchProps = TouchableOpacityProps &
   PlayerOfTheMatchContainerProps &
   ContentImagePlayerProps & {
     isReadOnly?: boolean
-    player: PlayerDTO
+    player: PlayerDTO | null
   }
 
 export function PlayerOfTheMatch({
@@ -31,7 +31,7 @@ export function PlayerOfTheMatch({
       disabled={isReadOnly || rest.disabled}
       {...rest}
     >
-      <Avatar slugAvatar={player.slugAvatar} isWinner={isWinner} />
+      <Avatar slugAvatar={player?.slugAvatar} isWinner={isWinner} />
 
       {!isReadOnly && <BoxCheck showCheck={isWinner} />}
     </PlayerOfTheMatchContainer>
