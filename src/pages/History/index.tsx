@@ -19,15 +19,6 @@ interface DaysMatchProps {
   title: string
 }
 
-const daysMatches: DaysMatchProps[] = [
-  {
-    title: "11/02/2024",
-  },
-  {
-    title: "20/02/2024",
-  },
-]
-
 interface ReturnGetListMatchesDates {
   matches: MatchesDates[]
 }
@@ -38,10 +29,10 @@ export function History() {
 
   const [loadingMatchesDates, setLoadingMatchesDates] = useState(false)
   const [matchesDates, setMatchesDates] = useState<SelectOptions[]>([])
-  const [selectedDate, setSelectedDate] = useState("default")
+  // const [selectedDate, setSelectedDate] = useState("default")
 
-  function handleNavigateToMatches() {
-    navigation.navigate("Matches")
+  function handleNavigateToMatches(date: string) {
+    navigation.navigate("Matches", { date })
   }
 
   async function onGetListMatchesDate() {
@@ -49,12 +40,7 @@ export function History() {
       setLoadingMatchesDates(true)
 
       const response = await api.get<ReturnGetListMatchesDates>(
-        "/matches/dates",
-        {
-          params: {
-            date: selectedDate === "default" ? undefined : selectedDate,
-          },
-        }
+        "/matches/dates"
       )
 
       const formatListMatchesDates: SelectOptions[] = response.data.matches.map(
@@ -78,19 +64,19 @@ export function History() {
 
   return (
     <Container>
-      <Select
+      {/* <Select
         options={matchesDates}
         selectedValue={selectedDate}
         onValueChange={(value) => {
           setSelectedDate(value as string)
         }}
-      />
+      /> */}
 
       <FlatList
         data={matchesDates}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item }) => (
-          <DateOfAMatch onPress={handleNavigateToMatches}>
+          <DateOfAMatch onPress={() => handleNavigateToMatches(item?.label)}>
             <DateOfAMatchTitle>{item?.label}</DateOfAMatchTitle>
             <Icon name="ChevronRight" color={colors.slate[400]} />
           </DateOfAMatch>

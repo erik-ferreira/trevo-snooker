@@ -1,7 +1,9 @@
 export declare global {
   namespace ReactNavigation {
     interface RootParamList {
-      Matches: undefined
+      Matches: {
+        date: string
+      }
     }
   }
 }

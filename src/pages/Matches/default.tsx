@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react"
 import Toast from "react-native-toast-message"
-import { useRoute } from "@react-navigation/native"
 import { View, Text, FlatList, Image } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
-
-import { api } from "@/services/api"
 
 import { players } from "@/defaults/players"
 import { MatchDTO } from "@/dtos/MatchDTO"
@@ -12,8 +9,6 @@ import { MatchDTO } from "@/dtos/MatchDTO"
 import { Option } from "@/components/Option"
 import { Divider } from "@/components/Divider"
 import { PlayerOfTheMatch } from "@/components/PlayerOfTheMatch"
-
-import { showToast } from "@/utils/showToast"
 
 import vs from "@/assets/vs.png"
 
@@ -26,47 +21,60 @@ import {
 } from "./styles"
 import { PlayerDTO } from "@/dtos/PlayerDTO"
 
-interface RouteProps {
-  date: string
-}
-
-interface ReturnGetListMatchesDates {
-  matches: MatchDTO[]
-}
-
 interface NewMatchesDTO extends MatchDTO {
   playerOne: PlayerDTO
   playerTwo: PlayerDTO
 }
 
 export function Matches() {
-  const route = useRoute()
-  const { date } = route.params as RouteProps
-
   const [matches, setMatches] = useState<NewMatchesDTO[]>([])
-  const [loadingMatches, setLoadingMatches] = useState(false)
 
-  async function onGetListMatches() {
+  async function getListMatches() {
     try {
-      setLoadingMatches(true)
+      const key = "@trevo-snooker"
 
-      const response = await api.get<ReturnGetListMatchesDates>("/matches", {
-        params: {
-          date,
-        },
+      const value = await AsyncStorage.getItem(key)
+
+      if (!value) {
+        // await AsyncStorage.setItem(key, JSON.stringify(matches))
+
+        throw new Error("Valor não encontrado")
+      } else {
+        const matches = JSON.parse(value) as MatchDTO[]
+
+        const newMatches: NewMatchesDTO[] = matches.map((match) => {
+          const playerOne = players.find(
+            (player) => player.id === match.playerOneId
+          ) as PlayerDTO
+          const playerTwo = players.find(
+            (player) => player.id === match.playerTwoId
+          ) as PlayerDTO
+
+          // console.log("playerOne", playerOne)
+          // console.log("playerTwo", playerTwo)
+
+          return {
+            ...match,
+            playerOne,
+            playerTwo,
+          }
+        })
+
+        setMatches(newMatches)
+      }
+    } catch (e) {
+      Toast.show({
+        type: "error",
+        text1: "Ops...",
+        text2: "Não foi possível buscar as partidas",
+        visibilityTime: 2000,
       })
-
-      console.log(date)
-      console.log(response.data.matches.length)
-    } catch (err) {
-      showToast.error("Não foi possível carregar a lista das datas de partidas")
-    } finally {
-      setLoadingMatches(false)
+      console.log("problem", e)
     }
   }
 
   useEffect(() => {
-    onGetListMatches()
+    getListMatches()
   }, [])
 
   return (
@@ -78,7 +86,7 @@ export function Matches() {
           <MatchContent key={item?.id}>
             <MatchNumber>{index + 1}º partida</MatchNumber>
 
-            {/* <MatchContentPlayers>
+            <MatchContentPlayers>
               <PlayerOfTheMatch
                 player={item.playerOne}
                 variant="player-one"
@@ -94,7 +102,7 @@ export function Matches() {
                 isWinner={item.playerTwoId === item.playerWinnerId}
                 disabled
               />
-            </MatchContentPlayers> */}
+            </MatchContentPlayers>
 
             <MatchContentOptions>
               <Option label="Capote" isChecked={item.isCapote} disabled />
