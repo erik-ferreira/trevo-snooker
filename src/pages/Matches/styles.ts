@@ -1,12 +1,21 @@
 import styled from "styled-components/native"
+import { FlatListProps } from "react-native"
+
+import { MatchesByUniqueDate } from "@/dtos/MatchDTO"
 
 export const Container = styled.SafeAreaView`
   flex: 1;
   gap: 36px;
 
-  padding: 40px 24px 0;
   background-color: ${(props) => props.theme.colors.page};
 `
+
+export const ContentListMatches = styled.FlatList.attrs(() => ({
+  contentContainerStyle: {
+    paddingVertical: 32,
+    paddingHorizontal: 24,
+  },
+}))<FlatListProps<MatchesByUniqueDate>>``
 
 export const MatchContent = styled.View`
   padding: 8px;

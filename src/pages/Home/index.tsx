@@ -31,13 +31,14 @@ import {
   ContentMatchesList,
   ContentOptions,
   // modal
-  ModalStyle,
+  modalStyle,
   ModalContent,
   ModalPicker,
   ModalHeader,
   ModalTitle,
   NumberOfPlayers,
-  ModalBodyStyle,
+  ModalPlayersList,
+  // ModalBodyStyle,
 } from "./styles"
 
 interface ReturnGetListPlayers {
@@ -200,9 +201,10 @@ export function Home() {
         onSwipeComplete={handleCloseModal}
         onBackButtonPress={handleCloseModal}
         onBackdropPress={handleCloseModal}
-        style={ModalStyle}
+        style={modalStyle}
         statusBarTranslucent
         swipeDirection={["down"]}
+        propagateSwipe
       >
         <ModalContent>
           <ModalPicker />
@@ -212,7 +214,7 @@ export function Home() {
             <NumberOfPlayers>Total {players.length}</NumberOfPlayers>
           </ModalHeader>
 
-          <FlatList
+          <ModalPlayersList
             data={players}
             keyExtractor={(item) => item.id}
             ItemSeparatorComponent={Divider}
@@ -225,7 +227,7 @@ export function Home() {
                 onPress={() => handleUpdatePlayerInMatcher(item)}
               />
             )}
-            contentContainerStyle={ModalBodyStyle}
+            // contentContainerStyle={ModalBodyStyle}
           />
         </ModalContent>
       </Modal>

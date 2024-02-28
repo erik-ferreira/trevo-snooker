@@ -1,5 +1,7 @@
 import styled from "styled-components/native"
-import { StyleProp, ViewStyle } from "react-native"
+import { StyleProp, ViewStyle, FlatListProps } from "react-native"
+
+import { PlayerWithQuantityMatchesProps } from "@/dtos/PlayerDTO"
 
 export const Container = styled.SafeAreaView`
   flex: 1;
@@ -35,7 +37,7 @@ export const ContentOptions = styled.View`
 `
 
 // modal
-export const ModalStyle: StyleProp<ViewStyle> = {
+export const modalStyle: StyleProp<ViewStyle> = {
   margin: 0,
   justifyContent: "flex-end",
 }
@@ -73,8 +75,10 @@ export const NumberOfPlayers = styled.Text`
   font-family: ${(props) => props.theme.fonts.raj.semiBold};
 `
 
-export const ModalBodyStyle: StyleProp<ViewStyle> = {
-  paddingHorizontal: 16,
-  paddingTop: 16,
-  paddingBottom: 24,
-}
+export const ModalPlayersList = styled.FlatList.attrs(() => ({
+  contentContainerStyle: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 24,
+  },
+}))<FlatListProps<PlayerWithQuantityMatchesProps>>``

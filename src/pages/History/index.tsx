@@ -1,10 +1,10 @@
 import { format } from "date-fns"
-import { FlatList } from "react-native"
 import { useEffect, useState } from "react"
 import { useTheme } from "styled-components/native"
 import { useNavigation } from "@react-navigation/native"
 
 import { api } from "@/services/api"
+
 import { MatchesDates } from "@/dtos/MatchDTO"
 
 import { Icon } from "@/components/Icon"
@@ -13,7 +13,12 @@ import { Select, SelectOptions } from "@/components/Select"
 
 import { showToast } from "@/utils/showToast"
 
-import { Container, DateOfAMatch, DateOfAMatchTitle } from "./styles"
+import {
+  Container,
+  ContentListMatchesDates,
+  DateOfAMatch,
+  DateOfAMatchTitle,
+} from "./styles"
 
 interface DaysMatchProps {
   title: string
@@ -72,9 +77,9 @@ export function History() {
         }}
       /> */}
 
-      <FlatList
+      <ContentListMatchesDates
         data={matchesDates}
-        keyExtractor={(_, index) => index.toString()}
+        keyExtractor={(item) => item.value}
         renderItem={({ item }) => (
           <DateOfAMatch onPress={() => handleNavigateToMatches(item?.label)}>
             <DateOfAMatchTitle>{item?.label}</DateOfAMatchTitle>

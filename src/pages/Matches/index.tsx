@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react"
-import Toast from "react-native-toast-message"
+import { FlatList, Image } from "react-native"
 import { useRoute } from "@react-navigation/native"
-import { View, Text, FlatList, Image } from "react-native"
-import AsyncStorage from "@react-native-async-storage/async-storage"
 
 import { api } from "@/services/api"
-
-import { players } from "@/defaults/players"
 
 import { MatchesByUniqueDate } from "@/dtos/MatchDTO"
 
@@ -20,6 +16,7 @@ import vs from "@/assets/vs.png"
 
 import {
   Container,
+  ContentListMatches,
   MatchContent,
   MatchNumber,
   MatchContentPlayers,
@@ -65,9 +62,9 @@ export function Matches() {
 
   return (
     <Container>
-      <FlatList
+      <ContentListMatches
         data={matches}
-        keyExtractor={(_, index) => index.toString()}
+        keyExtractor={(item) => item.id}
         renderItem={({ item, index }) => {
           const [playerOne, playerTwo] = item.players
 
