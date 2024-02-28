@@ -8,8 +8,8 @@ import { api } from "@/services/api"
 import { MatchesDates } from "@/dtos/MatchDTO"
 
 import { Icon } from "@/components/Icon"
-import { Select } from "@/components/Select"
 import { Divider } from "@/components/Divider"
+import { Select, SelectOptions } from "@/components/Select"
 
 import { showToast } from "@/utils/showToast"
 
@@ -37,7 +37,8 @@ export function History() {
   const navigation = useNavigation()
 
   const [loadingMatchesDates, setLoadingMatchesDates] = useState(false)
-  const [matchesDates, setMatchesDates] = useState<MatchesDates[]>([])
+  const [matchesDates, setMatchesDates] = useState<SelectOptions[]>([])
+  const [selectedDate, setSelectedDate] = useState("default")
 
   function handleNavigateToMatches() {
     navigation.navigate("Matches")
@@ -48,15 +49,22 @@ export function History() {
       setLoadingMatchesDates(true)
 
       const response = await api.get<ReturnGetListMatchesDates>(
-        "/matches/dates"
+        "/matches/dates",
+        {
+          params: {
+            date: selectedDate === "default" ? undefined : selectedDate,
+          },
+        }
       )
 
-      const formatListMatchesDAtes = response.data.matches.map((match) => ({
-        ...match,
-        createdAt: format(new Date(match.createdAt), "dd/MM/yyyy"),
-      }))
+      const formatListMatchesDates: SelectOptions[] = response.data.matches.map(
+        (match) => ({
+          label: format(new Date(match.createdAt), "dd/MM/yyyy"),
+          value: match.id,
+        })
+      )
 
-      setMatchesDates(formatListMatchesDAtes)
+      setMatchesDates(formatListMatchesDates)
     } catch (err) {
       showToast.error("Não foi possível carregar a lista das datas de partidas")
     } finally {
@@ -70,14 +78,20 @@ export function History() {
 
   return (
     <Container>
-      <Select />
+      <Select
+        options={matchesDates}
+        selectedValue={selectedDate}
+        onValueChange={(value) => {
+          setSelectedDate(value as string)
+        }}
+      />
 
       <FlatList
         data={matchesDates}
         keyExtractor={(_, index) => index.toString()}
         renderItem={({ item }) => (
           <DateOfAMatch onPress={handleNavigateToMatches}>
-            <DateOfAMatchTitle>{item?.createdAt}</DateOfAMatchTitle>
+            <DateOfAMatchTitle>{item?.label}</DateOfAMatchTitle>
             <Icon name="ChevronRight" color={colors.slate[400]} />
           </DateOfAMatch>
         )}

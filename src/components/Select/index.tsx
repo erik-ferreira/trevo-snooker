@@ -1,30 +1,40 @@
-import { useState } from "react"
-import { View, Text } from "react-native"
 import { useTheme } from "styled-components/native"
-import { Picker } from "@react-native-picker/picker"
+import { Picker, PickerProps } from "@react-native-picker/picker"
 
-interface SelectProps {}
+import { pickerStyle, pickerItemStyle } from "./style"
 
-export function Select({ ...rest }: SelectProps) {
+export interface SelectOptions {
+  label: string
+  value: string
+}
+
+interface SelectProps extends PickerProps {
+  options: SelectOptions[]
+}
+
+export function Select({ options, ...rest }: SelectProps) {
   const theme = useTheme()
 
-  const [selectedValue, setSelectedValue] = useState("one")
+  const formatOptions: SelectOptions[] = [
+    { label: "Selecione uma data...", value: "default" },
+    ...options,
+  ]
 
   return (
     <Picker
-      selectedValue={selectedValue}
-      onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
-      style={{
-        width: "100%",
-        backgroundColor: theme.colors.section,
-        color: theme.colors.slate[500],
-        borderRadius: 16,
-      }}
+      style={pickerStyle}
       dropdownIconColor={theme.colors.slate[500]}
       placeholder="Selecione uma data..."
+      {...rest}
     >
-      <Picker.Item label="11/02/2024" value="one" />
-      <Picker.Item label="20/02/2024" value="two" />
+      {formatOptions.map((option) => (
+        <Picker.Item
+          key={option.value}
+          label={option.label}
+          value={option.label}
+          style={pickerItemStyle}
+        />
+      ))}
     </Picker>
   )
 }
