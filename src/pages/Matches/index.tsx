@@ -7,7 +7,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { api } from "@/services/api"
 
 import { players } from "@/defaults/players"
-import { MatchDTO } from "@/dtos/MatchDTO"
+
+import { MatchesByUniqueDate } from "@/dtos/MatchDTO"
 
 import { Option } from "@/components/Option"
 import { Divider } from "@/components/Divider"
@@ -24,27 +25,21 @@ import {
   MatchContentPlayers,
   MatchContentOptions,
 } from "./styles"
-import { PlayerDTO } from "@/dtos/PlayerDTO"
 
 interface RouteProps {
   date: string
 }
 
 interface ReturnGetListMatchesDates {
-  matches: MatchDTO[]
-}
-
-interface NewMatchesDTO extends MatchDTO {
-  playerOne: PlayerDTO
-  playerTwo: PlayerDTO
+  matches: MatchesByUniqueDate[]
 }
 
 export function Matches() {
   const route = useRoute()
   const { date } = route.params as RouteProps
 
-  const [matches, setMatches] = useState<NewMatchesDTO[]>([])
   const [loadingMatches, setLoadingMatches] = useState(false)
+  const [matches, setMatches] = useState<MatchesByUniqueDate[]>([])
 
   async function onGetListMatches() {
     try {
@@ -56,10 +51,9 @@ export function Matches() {
         },
       })
 
-      console.log(date)
-      console.log(response.data.matches.length)
+      setMatches(response.data.matches)
     } catch (err) {
-      showToast.error("Não foi possível carregar a lista das datas de partidas")
+      showToast.error("Não foi possível carregar a lista das partidas")
     } finally {
       setLoadingMatches(false)
     }
@@ -74,34 +68,38 @@ export function Matches() {
       <FlatList
         data={matches}
         keyExtractor={(_, index) => index.toString()}
-        renderItem={({ item, index }) => (
-          <MatchContent key={item?.id}>
-            <MatchNumber>{index + 1}º partida</MatchNumber>
+        renderItem={({ item, index }) => {
+          const [playerOne, playerTwo] = item.players
 
-            {/* <MatchContentPlayers>
-              <PlayerOfTheMatch
-                player={item.playerOne}
-                variant="player-one"
-                isReadOnly
-                isWinner={item.playerOneId === item.playerWinnerId}
-                disabled
-              />
-              <Image source={vs} width={50} />
-              <PlayerOfTheMatch
-                player={item.playerTwo}
-                variant="player-two"
-                isReadOnly
-                isWinner={item.playerTwoId === item.playerWinnerId}
-                disabled
-              />
-            </MatchContentPlayers> */}
+          return (
+            <MatchContent key={item?.id}>
+              <MatchNumber>{index + 1}º partida</MatchNumber>
 
-            <MatchContentOptions>
-              <Option label="Capote" isChecked={item.isCapote} disabled />
-              <Option label="Suicídio" isChecked={item.isSuicide} disabled />
-            </MatchContentOptions>
-          </MatchContent>
-        )}
+              <MatchContentPlayers>
+                <PlayerOfTheMatch
+                  player={playerOne.player}
+                  variant="playerOne"
+                  isReadOnly
+                  isWinner={item.winnerPlayerId === playerOne.playerId}
+                />
+
+                <Image source={vs} width={50} />
+
+                <PlayerOfTheMatch
+                  player={playerTwo.player}
+                  variant="playerTwo"
+                  isReadOnly
+                  isWinner={item.winnerPlayerId === playerTwo.playerId}
+                />
+              </MatchContentPlayers>
+
+              <MatchContentOptions>
+                <Option label="Capote" isChecked={item.isCapote} disabled />
+                <Option label="Suicídio" isChecked={item.isSuicide} disabled />
+              </MatchContentOptions>
+            </MatchContent>
+          )
+        }}
         ItemSeparatorComponent={Divider}
       />
     </Container>
