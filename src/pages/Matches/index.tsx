@@ -66,8 +66,8 @@ export function Matches() {
     <Container>
       {loadingMatches ? (
         <LoadingSpinner />
-      ) : matches.length !== 0 ? (
-        <MessageNotFound />
+      ) : matches.length === 0 ? (
+        <MessageNotFound>Nenhuma partida encontrada</MessageNotFound>
       ) : (
         <ContentListMatches
           data={matches}
