@@ -47,8 +47,18 @@ export const ButtonPreviewMode = styled.TouchableOpacity.attrs(() => ({
   transition: background-color 2s linear;
 `
 
-export const Row = styled.View`
-  flex-direction: row;
+interface TableAndLineProps {
+  direction: "vertical" | "horizontal"
+}
+
+export const Table = styled.View<TableAndLineProps>`
+  flex-direction: ${(props) =>
+    props.direction === "horizontal" ? "column" : "row"};
+`
+
+export const Line = styled.View<TableAndLineProps>`
+  flex-direction: ${(props) =>
+    props.direction === "horizontal" ? "row" : "column"};
 `
 
 interface BoxProps {

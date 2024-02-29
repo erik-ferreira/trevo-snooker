@@ -17,9 +17,10 @@ import {
   ContentTitle,
   Title,
   ButtonPreviewMode,
+  Table,
+  Line,
   Box,
   InfoBox,
-  Row,
   AvatarContent,
   AvatarLetter,
 } from "./styles"
@@ -118,18 +119,18 @@ export function Statistics() {
       ) : playersStatistics.length === 0 ? (
         <MessageNotFound>Nenhuma estatística encontrada</MessageNotFound>
       ) : (
-        <View>
-          <Row>
+        <Table direction={previewMode}>
+          <Line direction={previewMode}>
             {tableHeader.map((item) => (
               <Box key={item} isHead>
                 <InfoBox>{item}</InfoBox>
               </Box>
             ))}
-          </Row>
+          </Line>
 
           {playersStatistics.map((player, index) => {
             return (
-              <Row key={index}>
+              <Line key={index} direction={previewMode}>
                 {player.map((stats, index) => (
                   <Box key={index}>
                     {typeof stats === "number" ? (
@@ -139,10 +140,10 @@ export function Statistics() {
                     )}
                   </Box>
                 ))}
-              </Row>
+              </Line>
             )
           })}
-        </View>
+        </Table>
       )}
     </Container>
   )
