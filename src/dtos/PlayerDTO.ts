@@ -18,3 +18,5 @@ export interface PlayerStatisticsProps extends PlayerDTO {
 export type WinnerPlayerProps = "playerOne" | "playerTwo" | null
 
 export type PlayerPressProps = "playerOne" | "playerTwo"
+
+export type SourceName = "antonio" | "breno" | "david" | "erik"

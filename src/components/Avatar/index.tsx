@@ -1,5 +1,7 @@
 import { Image, ImageSourcePropType } from "react-native"
 
+import { SourceName } from "@/dtos/PlayerDTO"
+
 import antonio from "@/assets/antonio.png"
 import breno from "@/assets/breno.png"
 import david from "@/assets/david.png"
@@ -10,8 +12,6 @@ import { ContainerAvatar, ContainerAvatarProps } from "./styles"
 interface AvatarProps extends ContainerAvatarProps {
   slugAvatar?: string
 }
-
-type SourceName = "antonio" | "breno" | "david" | "erik"
 
 const sourcesAvatar: Record<SourceName, ImageSourcePropType> = {
   antonio: antonio,

@@ -1,5 +1,7 @@
 import styled from "styled-components/native"
 
+import { SourceName } from "@/dtos/PlayerDTO"
+
 export const Container = styled.SafeAreaView`
   flex: 1;
   align-items: center;
@@ -65,6 +67,31 @@ export const Box = styled.View<BoxProps>`
 
 export const InfoBox = styled.Text`
   font-size: 18px;
+  color: ${(props) => props.theme.colors.white};
+  font-family: ${(props) => props.theme.fonts.mono.bold};
+`
+
+const colorsAvatar: Record<SourceName, string> = {
+  antonio: "#EC930A",
+  breno: "#a292e8",
+  david: "#5DADE2",
+  erik: "#EC0A0A",
+}
+
+interface AvatarContentProps {
+  slugAvatar: string
+}
+
+export const AvatarContent = styled.View<AvatarContentProps>`
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  background-color: ${(props) => colorsAvatar[props.slugAvatar as SourceName]};
+  align-items: center;
+  justify-content: center;
+`
+
+export const AvatarLetter = styled.Text`
   color: ${(props) => props.theme.colors.white};
   font-family: ${(props) => props.theme.fonts.mono.bold};
 `
