@@ -6,6 +6,7 @@ import { MatchesByUniqueDate } from "@/dtos/MatchDTO"
 export const Container = styled.SafeAreaView`
   flex: 1;
   gap: 36px;
+  justify-content: center;
 
   background-color: ${(props) => props.theme.colors.page};
 `

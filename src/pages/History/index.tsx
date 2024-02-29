@@ -9,7 +9,8 @@ import { MatchesDates } from "@/dtos/MatchDTO"
 
 import { Icon } from "@/components/Icon"
 import { Divider } from "@/components/Divider"
-import { Select, SelectOptions } from "@/components/Select"
+import { LoadingSpinner } from "@/components/LoadingSpinner"
+import { MessageNotFound } from "@/components/MessageNotFound"
 
 import { showToast } from "@/utils/showToast"
 
@@ -20,10 +21,6 @@ import {
   DateOfAMatchTitle,
 } from "./styles"
 
-interface DaysMatchProps {
-  title: string
-}
-
 interface ReturnGetListMatchesDates {
   matches: MatchesDates[]
 }
@@ -33,8 +30,7 @@ export function History() {
   const navigation = useNavigation()
 
   const [loadingMatchesDates, setLoadingMatchesDates] = useState(false)
-  const [matchesDates, setMatchesDates] = useState<SelectOptions[]>([])
-  // const [selectedDate, setSelectedDate] = useState("default")
+  const [matchesDates, setMatchesDates] = useState<MatchesDates[]>([])
 
   function handleNavigateToMatches(date: string) {
     navigation.navigate("Matches", { date })
@@ -48,10 +44,10 @@ export function History() {
         "/matches/dates"
       )
 
-      const formatListMatchesDates: SelectOptions[] = response.data.matches.map(
+      const formatListMatchesDates: MatchesDates[] = response.data.matches.map(
         (match) => ({
-          label: format(new Date(match.createdAt), "dd/MM/yyyy"),
-          value: match.id,
+          ...match,
+          createdAt: format(new Date(match.createdAt), "dd/MM/yyyy"),
         })
       )
 
@@ -69,27 +65,27 @@ export function History() {
 
   return (
     <Container>
-      {/* <Select
-        options={matchesDates}
-        selectedValue={selectedDate}
-        onValueChange={(value) => {
-          setSelectedDate(value as string)
-        }}
-      /> */}
-
-      <ContentListMatchesDates
-        data={matchesDates}
-        keyExtractor={(item) => item.value}
-        renderItem={({ item }) => (
-          <DateOfAMatch onPress={() => handleNavigateToMatches(item?.label)}>
-            <DateOfAMatchTitle>{item?.label}</DateOfAMatchTitle>
-            <Icon name="ChevronRight" color={colors.slate[400]} />
-          </DateOfAMatch>
-        )}
-        ItemSeparatorComponent={Divider}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 24 }}
-      />
+      {loadingMatchesDates ? (
+        <LoadingSpinner />
+      ) : matchesDates?.length === 0 ? (
+        <MessageNotFound>Nenhuma data de partida encontrada</MessageNotFound>
+      ) : (
+        <ContentListMatchesDates
+          data={matchesDates}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <DateOfAMatch
+              onPress={() => handleNavigateToMatches(item?.createdAt)}
+            >
+              <DateOfAMatchTitle>{item?.createdAt}</DateOfAMatchTitle>
+              <Icon name="ChevronRight" color={colors.slate[400]} />
+            </DateOfAMatch>
+          )}
+          ItemSeparatorComponent={Divider}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 24 }}
+        />
+      )}
     </Container>
   )
 }

@@ -19,13 +19,6 @@ export const DateToday = styled.Text`
   font-size: 40px;
 `
 
-export const NotFoundPlayers = styled.Text`
-  color: ${(props) => props.theme.colors.blue["800"]};
-  font-family: ${(props) => props.theme.fonts.orbi.semiBold};
-  font-size: 32px;
-  text-align: center;
-`
-
 export const ContentMatchesList = styled.View`
   flex-direction: row;
   align-items: center;

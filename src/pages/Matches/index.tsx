@@ -1,5 +1,5 @@
+import { Image } from "react-native"
 import { useEffect, useState } from "react"
-import { FlatList, Image } from "react-native"
 import { useRoute } from "@react-navigation/native"
 
 import { api } from "@/services/api"
@@ -8,6 +8,8 @@ import { MatchesByUniqueDate } from "@/dtos/MatchDTO"
 
 import { Option } from "@/components/Option"
 import { Divider } from "@/components/Divider"
+import { LoadingSpinner } from "@/components/LoadingSpinner"
+import { MessageNotFound } from "@/components/MessageNotFound"
 import { PlayerOfTheMatch } from "@/components/PlayerOfTheMatch"
 
 import { showToast } from "@/utils/showToast"
@@ -62,43 +64,53 @@ export function Matches() {
 
   return (
     <Container>
-      <ContentListMatches
-        data={matches}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item, index }) => {
-          const [playerOne, playerTwo] = item.players
+      {loadingMatches ? (
+        <LoadingSpinner />
+      ) : matches.length !== 0 ? (
+        <MessageNotFound />
+      ) : (
+        <ContentListMatches
+          data={matches}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item, index }) => {
+            const [playerOne, playerTwo] = item.players
 
-          return (
-            <MatchContent key={item?.id}>
-              <MatchNumber>{index + 1}º partida</MatchNumber>
+            return (
+              <MatchContent key={item?.id}>
+                <MatchNumber>{index + 1}º partida</MatchNumber>
 
-              <MatchContentPlayers>
-                <PlayerOfTheMatch
-                  player={playerOne.player}
-                  variant="playerOne"
-                  isReadOnly
-                  isWinner={item.winnerPlayerId === playerOne.playerId}
-                />
+                <MatchContentPlayers>
+                  <PlayerOfTheMatch
+                    player={playerOne.player}
+                    variant="playerOne"
+                    isReadOnly
+                    isWinner={item.winnerPlayerId === playerOne.playerId}
+                  />
 
-                <Image source={vs} width={50} />
+                  <Image source={vs} width={50} />
 
-                <PlayerOfTheMatch
-                  player={playerTwo.player}
-                  variant="playerTwo"
-                  isReadOnly
-                  isWinner={item.winnerPlayerId === playerTwo.playerId}
-                />
-              </MatchContentPlayers>
+                  <PlayerOfTheMatch
+                    player={playerTwo.player}
+                    variant="playerTwo"
+                    isReadOnly
+                    isWinner={item.winnerPlayerId === playerTwo.playerId}
+                  />
+                </MatchContentPlayers>
 
-              <MatchContentOptions>
-                <Option label="Capote" isChecked={item.isCapote} disabled />
-                <Option label="Suicídio" isChecked={item.isSuicide} disabled />
-              </MatchContentOptions>
-            </MatchContent>
-          )
-        }}
-        ItemSeparatorComponent={Divider}
-      />
+                <MatchContentOptions>
+                  <Option label="Capote" isChecked={item.isCapote} disabled />
+                  <Option
+                    label="Suicídio"
+                    isChecked={item.isSuicide}
+                    disabled
+                  />
+                </MatchContentOptions>
+              </MatchContent>
+            )
+          }}
+          ItemSeparatorComponent={Divider}
+        />
+      )}
     </Container>
   )
 }

@@ -1,5 +1,7 @@
 import { useTheme } from "styled-components/native"
-import { ActivityIndicator, TouchableOpacityProps } from "react-native"
+import { TouchableOpacityProps } from "react-native"
+
+import { LoadingSpinner } from "@/components/LoadingSpinner"
 
 import { ButtonContainer, TextButtonContainer } from "./styles"
 
@@ -18,7 +20,7 @@ export function Button({
   return (
     <ButtonContainer {...rest}>
       {loading ? (
-        <ActivityIndicator color={theme.colors.slate[100]} />
+        <LoadingSpinner variant="secondary" />
       ) : (
         <TextButtonContainer>{label}</TextButtonContainer>
       )}

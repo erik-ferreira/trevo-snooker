@@ -2,7 +2,7 @@ import { format } from "date-fns"
 import Modal from "react-native-modal"
 import { useEffect, useState } from "react"
 import { useTheme } from "styled-components/native"
-import { Image, FlatList, ActivityIndicator } from "react-native"
+import { Image, ActivityIndicator } from "react-native"
 
 import { api } from "@/services/api"
 
@@ -10,6 +10,8 @@ import { Player } from "@/components/Player"
 import { Button } from "@/components/Button"
 import { Option } from "@/components/Option"
 import { Divider } from "@/components/Divider"
+import { LoadingSpinner } from "@/components/LoadingSpinner"
+import { MessageNotFound } from "@/components/MessageNotFound"
 import { PlayerOfTheMatch } from "@/components/PlayerOfTheMatch"
 
 import {
@@ -27,7 +29,6 @@ import {
   // page
   Container,
   DateToday,
-  NotFoundPlayers,
   ContentMatchesList,
   ContentOptions,
   // modal
@@ -38,7 +39,6 @@ import {
   ModalTitle,
   NumberOfPlayers,
   ModalPlayersList,
-  // ModalBodyStyle,
 } from "./styles"
 
 interface ReturnGetListPlayers {
@@ -154,9 +154,9 @@ export function Home() {
   return (
     <Container>
       {loadingPlayers ? (
-        <ActivityIndicator size="large" color={colors.blue[500]} />
+        <LoadingSpinner variant="primary" />
       ) : players.length === 0 ? (
-        <NotFoundPlayers>Nenhum jogador encontrado</NotFoundPlayers>
+        <MessageNotFound>Nenhum jogador encontrado</MessageNotFound>
       ) : (
         <>
           <DateToday>{currentDate}</DateToday>
