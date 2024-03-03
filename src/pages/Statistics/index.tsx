@@ -117,7 +117,7 @@ export function Statistics() {
       {loadingPlayersStatistics ? (
         <LoadingSpinner />
       ) : playersStatistics.length === 0 ? (
-        <MessageNotFound>Nenhuma estatística encontrada</MessageNotFound>
+        <MessageNotFound message="Nenhuma estatística encontrada" />
       ) : (
         <Table direction={previewMode}>
           <Line direction={previewMode}>

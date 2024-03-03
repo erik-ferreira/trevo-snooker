@@ -1,8 +1,7 @@
 import { format } from "date-fns"
+import { Image } from "react-native"
 import Modal from "react-native-modal"
 import { useEffect, useState } from "react"
-import { useTheme } from "styled-components/native"
-import { Image, ActivityIndicator } from "react-native"
 
 import { api } from "@/services/api"
 
@@ -51,8 +50,6 @@ interface ModalProps {
 }
 
 export function Home() {
-  const { colors } = useTheme()
-
   const currentDate = format(new Date(), "dd/MM/yyyy")
 
   const [players, setPlayers] = useState<PlayerWithQuantityMatchesProps[]>([])
@@ -156,7 +153,7 @@ export function Home() {
       {loadingPlayers ? (
         <LoadingSpinner variant="primary" />
       ) : players.length === 0 ? (
-        <MessageNotFound>Nenhum jogador encontrado</MessageNotFound>
+        <MessageNotFound message="Nenhum jogador encontrado" />
       ) : (
         <>
           <DateToday>{currentDate}</DateToday>

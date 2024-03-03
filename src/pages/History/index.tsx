@@ -1,5 +1,6 @@
 import { format } from "date-fns"
 import { useEffect, useState } from "react"
+import { RefreshControl } from "react-native"
 import { useTheme } from "styled-components/native"
 import { useNavigation } from "@react-navigation/native"
 
@@ -29,6 +30,8 @@ export function History() {
   const { colors } = useTheme()
   const navigation = useNavigation()
 
+  const [refreshMatchesDates, setRefreshMatchesDates] = useState(false)
+
   const [loadingMatchesDates, setLoadingMatchesDates] = useState(false)
   const [matchesDates, setMatchesDates] = useState<MatchesDates[]>([])
 
@@ -36,9 +39,13 @@ export function History() {
     navigation.navigate("Matches", { date })
   }
 
-  async function onGetListMatchesDate() {
+  async function onGetListMatchesDate(refresh = false) {
     try {
-      setLoadingMatchesDates(true)
+      if (refresh) {
+        setRefreshMatchesDates(true)
+      } else {
+        setLoadingMatchesDates(true)
+      }
 
       const response = await api.get<ReturnGetListMatchesDates>(
         "/matches/dates"
@@ -55,8 +62,16 @@ export function History() {
     } catch (err) {
       showToast.error("Não foi possível carregar a lista das datas de partidas")
     } finally {
-      setLoadingMatchesDates(false)
+      if (refresh) {
+        setRefreshMatchesDates(false)
+      } else {
+        setLoadingMatchesDates(false)
+      }
     }
+  }
+
+  async function onRefreshMatchesDates() {
+    onGetListMatchesDate(true)
   }
 
   useEffect(() => {
@@ -67,8 +82,8 @@ export function History() {
     <Container>
       {loadingMatchesDates ? (
         <LoadingSpinner />
-      ) : matchesDates?.length === 0 ? (
-        <MessageNotFound>Nenhuma data de partida encontrada</MessageNotFound>
+      ) : matchesDates?.length !== 0 ? (
+        <MessageNotFound message="Nenhuma data de partida encontrada" />
       ) : (
         <ContentListMatchesDates
           data={matchesDates}
@@ -84,6 +99,12 @@ export function History() {
           ItemSeparatorComponent={Divider}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 24 }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshMatchesDates}
+              onRefresh={onRefreshMatchesDates}
+            />
+          }
         />
       )}
     </Container>
