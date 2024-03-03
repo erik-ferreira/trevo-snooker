@@ -144,6 +144,10 @@ export function Home() {
     }
   }
 
+  async function onTryGetListPlayersAgain() {
+    onGetListPlayers()
+  }
+
   useEffect(() => {
     onGetListPlayers()
   }, [])
@@ -153,7 +157,10 @@ export function Home() {
       {loadingPlayers ? (
         <LoadingSpinner variant="primary" />
       ) : players.length === 0 ? (
-        <MessageNotFound message="Nenhum jogador encontrado" />
+        <MessageNotFound
+          message="Nenhum jogador encontrado"
+          onTryAgain={onTryGetListPlayersAgain}
+        />
       ) : (
         <>
           <DateToday>{currentDate}</DateToday>

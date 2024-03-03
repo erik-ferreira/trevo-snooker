@@ -1,7 +1,5 @@
 import styled from "styled-components/native"
 
-import { defaultTheme } from "@/theme/default"
-
 export interface ButtonContainerProps {
   variant?: "primary" | "secondary"
 }
@@ -9,7 +7,7 @@ export interface ButtonContainerProps {
 export const ButtonContainer = styled.TouchableOpacity.attrs(() => ({
   activeOpacity: 0.7,
 }))<ButtonContainerProps>`
-  width: 100%;
+  width: ${(props) => (props.variant === "primary" ? `100%` : "fit-content")};
   border-radius: 4px;
   padding: 12px 16px;
   background-color: ${(props) =>

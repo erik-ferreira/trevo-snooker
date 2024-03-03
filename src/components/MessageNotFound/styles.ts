@@ -2,6 +2,7 @@ import styled from "styled-components/native"
 
 export const MessageNotFoundContainer = styled.View`
   gap: 24px;
+  align-items: center;
 
   padding: 0 24px;
 `

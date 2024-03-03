@@ -1,12 +1,22 @@
-import styled from "styled-components/native"
+import styled, { css } from "styled-components/native"
 import { FlatListProps } from "react-native"
 
 import { MatchesDates } from "@/dtos/MatchDTO"
 
-export const Container = styled.SafeAreaView`
+interface ContainerProps {
+  isEmptyMatchesDates?: boolean
+}
+
+export const Container = styled.SafeAreaView<ContainerProps>`
   flex: 1;
   gap: 36px;
   justify-content: center;
+
+  ${(props) =>
+    props.isEmptyMatchesDates &&
+    css`
+      padding: 0 24px;
+    `}
 
   background-color: ${(props) => props.theme.colors.page};
 `

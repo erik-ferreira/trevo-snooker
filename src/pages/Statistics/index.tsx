@@ -88,6 +88,10 @@ export function Statistics() {
     }
   }
 
+  async function onTryGetListPlayersAgain() {
+    onGetPlayersStatistics()
+  }
+
   useEffect(() => {
     onGetPlayersStatistics()
   }, [])
@@ -117,7 +121,10 @@ export function Statistics() {
       {loadingPlayersStatistics ? (
         <LoadingSpinner />
       ) : playersStatistics.length === 0 ? (
-        <MessageNotFound message="Nenhuma estatística encontrada" />
+        <MessageNotFound
+          message="Nenhuma estatística encontrada"
+          onTryAgain={onTryGetListPlayersAgain}
+        />
       ) : (
         <Table direction={previewMode}>
           <Line direction={previewMode}>

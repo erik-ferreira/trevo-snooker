@@ -74,16 +74,23 @@ export function History() {
     onGetListMatchesDate(true)
   }
 
+  async function onTryGetListMatchesDateAgain() {
+    onGetListMatchesDate(false)
+  }
+
   useEffect(() => {
     onGetListMatchesDate()
   }, [])
 
   return (
-    <Container>
+    <Container isEmptyMatchesDates={matchesDates.length === 0}>
       {loadingMatchesDates ? (
         <LoadingSpinner />
-      ) : matchesDates?.length !== 0 ? (
-        <MessageNotFound message="Nenhuma data de partida encontrada" />
+      ) : matchesDates?.length === 0 ? (
+        <MessageNotFound
+          message="Nenhuma data de partida encontrada"
+          onTryAgain={onTryGetListMatchesDateAgain}
+        />
       ) : (
         <ContentListMatchesDates
           data={matchesDates}
