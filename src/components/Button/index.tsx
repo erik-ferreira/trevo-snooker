@@ -1,11 +1,14 @@
-import { useTheme } from "styled-components/native"
 import { TouchableOpacityProps } from "react-native"
 
 import { LoadingSpinner } from "@/components/LoadingSpinner"
 
-import { ButtonContainer, TextButtonContainer } from "./styles"
+import {
+  ButtonContainerProps,
+  ButtonContainer,
+  TextButtonContainer,
+} from "./styles"
 
-interface ButtonProps extends TouchableOpacityProps {
+interface ButtonProps extends TouchableOpacityProps, ButtonContainerProps {
   label?: string
   loading?: boolean
 }
@@ -13,12 +16,11 @@ interface ButtonProps extends TouchableOpacityProps {
 export function Button({
   label = "Salvar",
   loading = false,
+  variant = "primary",
   ...rest
 }: ButtonProps) {
-  const theme = useTheme()
-
   return (
-    <ButtonContainer {...rest}>
+    <ButtonContainer variant={variant} {...rest}>
       {loading ? (
         <LoadingSpinner variant="secondary" />
       ) : (

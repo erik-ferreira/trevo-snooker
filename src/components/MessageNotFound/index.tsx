@@ -1,14 +1,20 @@
 import { ReactNode } from "react"
-import { TextProps } from "react-native"
+import { ViewProps } from "react-native"
 
-import { NotFoundPlayersContainer } from "./styles"
+import { Button } from "@/components/Button"
 
-interface MessageNotFoundProps extends TextProps {
-  children: ReactNode
+import { MessageNotFoundContainer, Message } from "./styles"
+
+interface MessageNotFoundProps extends ViewProps {
+  // children: ReactNode
+  message: string
 }
 
-export function MessageNotFound({ children, ...rest }: MessageNotFoundProps) {
+export function MessageNotFound({ message, ...rest }: MessageNotFoundProps) {
   return (
-    <NotFoundPlayersContainer {...rest}>{children}</NotFoundPlayersContainer>
+    <MessageNotFoundContainer {...rest}>
+      <Message>{message}</Message>
+      <Button variant="secondary" label="Tentar novamente" />
+    </MessageNotFoundContainer>
   )
 }
