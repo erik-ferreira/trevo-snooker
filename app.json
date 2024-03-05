@@ -2,7 +2,6 @@
   "expo": {
     "name": "trevo-snooker",
     "slug": "trevo-snooker",
-    "scheme": "trevo-snooker",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,12 +19,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.erik_ferreira.trevosnooker"
     },
     "web": {
-      "favicon": "./assets/favicon.png",
-      "bundle": "metro"
+      "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-font", "expo-router"]
+    "extra": {
+      "eas": {
+        "projectId": "875dad69-6a42-4371-a815-9bed1a51d85f"
+      }
+    }
   }
 }
