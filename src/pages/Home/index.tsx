@@ -1,12 +1,12 @@
 import { useState } from "react"
+import { format } from "date-fns"
 import uuid from "react-native-uuid"
 import { Image } from "react-native"
 import Modal from "react-native-modal"
-import { format, toDate } from "date-fns"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
-import { api } from "@/services/api"
 import { players } from "@/defaults/players"
+import { storageKey } from "@/constants/storage"
 
 import { Player } from "@/components/Player"
 import { Button } from "@/components/Button"
@@ -106,17 +106,16 @@ export function Home() {
     }
 
     try {
-      const key = "@trevo-snooker"
       const winnerPlayerId =
         winnerPlayer === "playerOne" ? playerOne?.id : playerTwo?.id
 
-      const storage = await AsyncStorage.getItem(key)
+      const storage = await AsyncStorage.getItem(storageKey)
 
       let matches: MatchesByUniqueDateLocal[] = []
 
       if (!storage) {
         // create storage key
-        await AsyncStorage.setItem(key, JSON.stringify(matches))
+        await AsyncStorage.setItem(storageKey, JSON.stringify(matches))
       } else {
         // get storage
         matches = JSON.parse(storage)
@@ -135,7 +134,7 @@ export function Home() {
       matches = [...matches, newMatch]
 
       // save match
-      await AsyncStorage.setItem(key, JSON.stringify(matches))
+      await AsyncStorage.setItem(storageKey, JSON.stringify(matches))
 
       showToast.success("Partida criada com sucesso")
 

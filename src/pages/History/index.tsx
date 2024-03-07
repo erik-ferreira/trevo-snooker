@@ -1,12 +1,15 @@
 import { format } from "date-fns"
+import uuid from "react-native-uuid"
 import { useEffect, useState } from "react"
 import { RefreshControl } from "react-native"
 import { useTheme } from "styled-components/native"
 import { useNavigation } from "@react-navigation/native"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 import { api } from "@/services/api"
+import { storageKey } from "@/constants/storage"
 
-import { MatchesDates } from "@/dtos/MatchDTO"
+import { MatchesDates, MatchesByUniqueDateLocal } from "@/dtos/MatchDTO"
 
 import { Icon } from "@/components/Icon"
 import { Divider } from "@/components/Divider"
@@ -41,26 +44,45 @@ export function History() {
 
   async function onGetListMatchesDate(refresh = false) {
     try {
+      const storage = await AsyncStorage.getItem(storageKey)
+
+      if (!storage) {
+        throw new Error("Não foi possível buscar os dados do storage")
+      }
+
       if (refresh) {
         setRefreshMatchesDates(true)
       } else {
         setLoadingMatchesDates(true)
       }
 
-      const response = await api.get<ReturnGetListMatchesDates>(
-        "/matches/dates"
+      const matches = JSON.parse(storage) as MatchesByUniqueDateLocal[]
+
+      const convertMatches = matches.map(
+        (match) => match.createdAt.split("T")[0]
       )
 
-      const formatListMatchesDates: MatchesDates[] = response.data.matches.map(
-        (match) => ({
-          ...match,
-          createdAt: format(new Date(match.createdAt), "dd/MM/yyyy"),
-        })
-      )
+      const formatMatches: MatchesDates[] = Array.from(
+        new Set(convertMatches)
+      ).map((date) => ({
+        id: uuid.v4() as string,
+        createdAt: format(new Date(date), "dd/MM/yyyy"),
+      }))
 
-      setMatchesDates(formatListMatchesDates)
+      console.log("----------------------------")
+      console.log("matches", JSON.stringify(matches, null, 2))
+      console.log("convertMatches", JSON.stringify(convertMatches, null, 2))
+      console.log("formatMatches", JSON.stringify(formatMatches, null, 2))
+
+      setMatchesDates(formatMatches)
     } catch (err) {
-      showToast.error("Não foi possível carregar a lista das datas de partidas")
+      let message = "Não foi possível carregar a lista das datas de partidas"
+
+      if (err instanceof Error) {
+        message = err.message
+      }
+
+      showToast.error(message)
     } finally {
       if (refresh) {
         setRefreshMatchesDates(false)
