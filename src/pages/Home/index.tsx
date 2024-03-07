@@ -1,16 +1,18 @@
-import { format } from "date-fns"
+import { useState } from "react"
+import uuid from "react-native-uuid"
 import { Image } from "react-native"
 import Modal from "react-native-modal"
-import { useEffect, useState } from "react"
+import { format, toDate } from "date-fns"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 import { api } from "@/services/api"
+import { players } from "@/defaults/players"
 
 import { Player } from "@/components/Player"
 import { Button } from "@/components/Button"
 import { Option } from "@/components/Option"
 import { Divider } from "@/components/Divider"
-import { LoadingSpinner } from "@/components/LoadingSpinner"
-import { MessageNotFound } from "@/components/MessageNotFound"
+
 import { PlayerOfTheMatch } from "@/components/PlayerOfTheMatch"
 
 import {
@@ -18,7 +20,7 @@ import {
   WinnerPlayerProps,
   PlayerPressProps,
 } from "@/dtos/PlayerDTO"
-import { OptionMatchProps } from "@/dtos/MatchDTO"
+import { OptionMatchProps, MatchesByUniqueDateLocal } from "@/dtos/MatchDTO"
 
 import { showToast } from "@/utils/showToast"
 
@@ -52,12 +54,12 @@ interface ModalProps {
 export function Home() {
   const currentDate = format(new Date(), "dd/MM/yyyy")
 
-  const [players, setPlayers] = useState<PlayerWithQuantityMatchesProps[]>([])
-  const [playerOne, setPlayerOne] =
-    useState<PlayerWithQuantityMatchesProps | null>(null)
-  const [playerTwo, setPlayerTwo] =
-    useState<PlayerWithQuantityMatchesProps | null>(null)
-  const [loadingPlayers, setLoadingPlayers] = useState(false)
+  const [playerOne, setPlayerOne] = useState<PlayerWithQuantityMatchesProps>(
+    players[0]
+  )
+  const [playerTwo, setPlayerTwo] = useState<PlayerWithQuantityMatchesProps>(
+    players[1]
+  )
 
   const [optionMatch, setOptionMatch] = useState<OptionMatchProps>(null)
   const [winnerPlayer, setWinnerPlayer] = useState<WinnerPlayerProps>(null)
@@ -104,21 +106,38 @@ export function Home() {
     }
 
     try {
+      const key = "@trevo-snooker"
       const winnerPlayerId =
         winnerPlayer === "playerOne" ? playerOne?.id : playerTwo?.id
 
-      const data = {
+      const storage = await AsyncStorage.getItem(key)
+
+      let matches: MatchesByUniqueDateLocal[] = []
+
+      if (!storage) {
+        // create storage key
+        await AsyncStorage.setItem(key, JSON.stringify(matches))
+      } else {
+        // get storage
+        matches = JSON.parse(storage)
+      }
+
+      const createdAt = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+      const newMatch: MatchesByUniqueDateLocal = {
+        id: uuid.v4() as string,
         isCapote: optionMatch === "isCapote",
         isSuicide: optionMatch === "isSuicide",
+        playersIds: [playerOne.id, playerTwo.id],
         winnerPlayerId,
-        playersIds: [playerOne?.id, playerTwo?.id],
+        createdAt,
       }
 
-      const response = await api.post("/matches", data)
+      matches = [...matches, newMatch]
 
-      if (response.status === 201) {
-        showToast.success("Partida criada com sucesso")
-      }
+      // save match
+      await AsyncStorage.setItem(key, JSON.stringify(matches))
+
+      showToast.success("Partida criada com sucesso")
 
       setOptionMatch(null)
       setWinnerPlayer(null)
@@ -128,77 +147,42 @@ export function Home() {
     }
   }
 
-  async function onGetListPlayers() {
-    try {
-      setLoadingPlayers(true)
-
-      const response = await api.get<ReturnGetListPlayers>("/players")
-
-      setPlayers(response.data.players)
-      setPlayerOne(response.data.players[0])
-      setPlayerTwo(response.data.players[1])
-    } catch (err) {
-      showToast.error("Não foi possível carregar a lista de jogadores")
-    } finally {
-      setLoadingPlayers(false)
-    }
-  }
-
-  async function onTryGetListPlayersAgain() {
-    onGetListPlayers()
-  }
-
-  useEffect(() => {
-    onGetListPlayers()
-  }, [])
-
   return (
     <Container>
-      {loadingPlayers ? (
-        <LoadingSpinner variant="primary" />
-      ) : players.length === 0 ? (
-        <MessageNotFound
-          message="Nenhum jogador encontrado"
-          onTryAgain={onTryGetListPlayersAgain}
+      <DateToday>{currentDate}</DateToday>
+
+      <ContentMatchesList>
+        <PlayerOfTheMatch
+          player={playerOne}
+          variant="playerOne"
+          isWinner={winnerPlayer === "playerOne"}
+          onLongPress={() => handleShowModal("playerOne")}
+          onPress={() => handleChangeWinnerPlayer("playerOne")}
         />
-      ) : (
-        <>
-          <DateToday>{currentDate}</DateToday>
+        <Image source={vs} width={50} />
+        <PlayerOfTheMatch
+          player={playerTwo}
+          variant="playerTwo"
+          isWinner={winnerPlayer === "playerTwo"}
+          onLongPress={() => handleShowModal("playerTwo")}
+          onPress={() => handleChangeWinnerPlayer("playerTwo")}
+        />
+      </ContentMatchesList>
 
-          <ContentMatchesList>
-            <PlayerOfTheMatch
-              player={playerOne}
-              variant="playerOne"
-              isWinner={winnerPlayer === "playerOne"}
-              onLongPress={() => handleShowModal("playerOne")}
-              onPress={() => handleChangeWinnerPlayer("playerOne")}
-            />
-            <Image source={vs} width={50} />
-            <PlayerOfTheMatch
-              player={playerTwo}
-              variant="playerTwo"
-              isWinner={winnerPlayer === "playerTwo"}
-              onLongPress={() => handleShowModal("playerTwo")}
-              onPress={() => handleChangeWinnerPlayer("playerTwo")}
-            />
-          </ContentMatchesList>
+      <ContentOptions>
+        <Option
+          label="Capote"
+          isChecked={optionMatch === "isCapote"}
+          onPress={() => handleChangeOptionMatch("isCapote")}
+        />
+        <Option
+          label="Suicídio"
+          isChecked={optionMatch === "isSuicide"}
+          onPress={() => handleChangeOptionMatch("isSuicide")}
+        />
+      </ContentOptions>
 
-          <ContentOptions>
-            <Option
-              label="Capote"
-              isChecked={optionMatch === "isCapote"}
-              onPress={() => handleChangeOptionMatch("isCapote")}
-            />
-            <Option
-              label="Suicídio"
-              isChecked={optionMatch === "isSuicide"}
-              onPress={() => handleChangeOptionMatch("isSuicide")}
-            />
-          </ContentOptions>
-
-          <Button label="Salvar" onPress={handleSaveMatch} />
-        </>
-      )}
+      <Button label="Salvar" onPress={handleSaveMatch} />
 
       <Modal
         isVisible={modal.isVisible}
@@ -231,7 +215,6 @@ export function Home() {
                 onPress={() => handleUpdatePlayerInMatcher(item)}
               />
             )}
-            // contentContainerStyle={ModalBodyStyle}
           />
         </ModalContent>
       </Modal>

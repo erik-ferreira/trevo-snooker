@@ -2,8 +2,8 @@ import { PlayerDTO } from "./PlayerDTO"
 
 export interface MatchDTO {
   id: string
-  isCapote: false
-  isSuicide: false
+  isCapote: boolean
+  isSuicide: boolean
   createdAt: string
   winnerPlayerId: string
 }
@@ -16,6 +16,10 @@ interface PlayerMatchDTO {
 
 export interface MatchesByUniqueDate extends MatchDTO {
   players: PlayerMatchDTO[]
+}
+
+export interface MatchesByUniqueDateLocal extends MatchDTO {
+  playersIds: string[]
 }
 
 export type MatchesDates = Pick<MatchDTO, "id" | "createdAt">
