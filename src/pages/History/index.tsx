@@ -6,7 +6,6 @@ import { useTheme } from "styled-components/native"
 import { useNavigation } from "@react-navigation/native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
-import { api } from "@/services/api"
 import { storageKey } from "@/constants/storage"
 
 import { MatchesDates, MatchesByUniqueDateLocal } from "@/dtos/MatchDTO"
@@ -68,11 +67,6 @@ export function History() {
         id: uuid.v4() as string,
         createdAt: format(new Date(date), "dd/MM/yyyy"),
       }))
-
-      console.log("----------------------------")
-      console.log("matches", JSON.stringify(matches, null, 2))
-      console.log("convertMatches", JSON.stringify(convertMatches, null, 2))
-      console.log("formatMatches", JSON.stringify(formatMatches, null, 2))
 
       setMatchesDates(formatMatches)
     } catch (err) {

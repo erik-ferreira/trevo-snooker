@@ -1,10 +1,12 @@
 import { Image } from "react-native"
 import { useEffect, useState } from "react"
 import { useRoute } from "@react-navigation/native"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
-import { api } from "@/services/api"
+import { players } from "@/defaults/players"
+import { storageKey } from "@/constants/storage"
 
-import { MatchesByUniqueDate } from "@/dtos/MatchDTO"
+import { MatchesByUniqueDate, MatchesByUniqueDateLocal } from "@/dtos/MatchDTO"
 
 import { Option } from "@/components/Option"
 import { Divider } from "@/components/Divider"
@@ -42,17 +44,43 @@ export function Matches() {
 
   async function onGetListMatches() {
     try {
+      if (!date) {
+        throw new Error("Data não informada")
+      }
+
       setLoadingMatches(true)
 
-      const response = await api.get<ReturnGetListMatchesDates>("/matches", {
-        params: {
-          date,
-        },
+      const storage = await AsyncStorage.getItem(storageKey)
+
+      if (!storage) {
+        throw new Error("Não foi possível buscar as partidas do storage")
+      }
+
+      const formatPlayers = {} as any
+      players.map((player) => {
+        formatPlayers[player.id] = player
       })
 
-      setMatches(response.data.matches)
+      const matchesStorage = JSON.parse(storage) as MatchesByUniqueDateLocal[]
+
+      const formatMatches: MatchesByUniqueDate[] = matchesStorage.map(
+        (match) => ({
+          ...match,
+          players: match.playersIds.map((playerId) => formatPlayers[playerId]),
+        })
+      )
+
+      // console.log("formatMatches", JSON.stringify(formatMatches, null, 2))
+
+      setMatches(formatMatches)
     } catch (err) {
-      showToast.error("Não foi possível carregar a lista das partidas")
+      let message = "Não foi possível carregar a lista das partidas"
+
+      if (err instanceof Error) {
+        message = err.message
+      }
+
+      showToast.error(message)
     } finally {
       setLoadingMatches(false)
     }
