@@ -1,3 +1,4 @@
+import { MatchDTO } from "./MatchDTO"
 import { StatisticsDTO } from "./StatisticsDTO"
 
 export interface PlayerDTO {
@@ -20,3 +21,29 @@ export type WinnerPlayerProps = "playerOne" | "playerTwo" | null
 export type PlayerPressProps = "playerOne" | "playerTwo"
 
 export type SourceName = "antonio" | "breno" | "david" | "erik"
+
+type MatchesProps = Array<{
+  match: MatchDTO
+  matchId: string
+  playerId: string
+}>
+
+export interface PlayerStorageProps extends PlayerDTO {
+  matches: MatchesProps
+}
+
+interface Statistics {
+  numberOfMatchesWon: number
+  numberOfMatchesLose: number
+  numberOfMatchesWonPerNormal: number
+  numberOfMatchesLosePerNormal: number
+  numberOfMatchesWonPerCapote: number
+  numberOfMatchesLosePerCapote: number
+  numberOfMatchesWonPerSuicide: number
+  numberOfMatchesLosePerSuicide: number
+  points: number
+}
+
+export interface ReturnPlayersStatistics extends PlayerDTO {
+  statistics: Statistics
+}

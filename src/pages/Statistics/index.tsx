@@ -1,14 +1,18 @@
 import { View } from "react-native"
 import { useState, useEffect, JSX } from "react"
 import { useTheme } from "styled-components/native"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 import { api } from "@/services/api"
+import { players } from "@/defaults/players"
+import { storageKey } from "@/constants/storage"
 
 import { Icon } from "@/components/Icon"
 import { LoadingSpinner } from "@/components/LoadingSpinner"
 import { MessageNotFound } from "@/components/MessageNotFound"
 
 import { PlayerStatisticsProps } from "@/dtos/PlayerDTO"
+import { MatchesByUniqueDateLocal } from "@/dtos/MatchDTO"
 
 import { showToast } from "@/utils/showToast"
 
@@ -24,6 +28,7 @@ import {
   AvatarContent,
   AvatarLetter,
 } from "./styles"
+import { calculatePlayersStatistics } from "@/utils/calculatePlayersStatistics"
 
 type ValueTable = [JSX.Element, number, number, number, number, number, number]
 
@@ -49,40 +54,82 @@ export function Statistics() {
     try {
       setLoadingPlayersStatistics(true)
 
-      const response = await api.get<ReturnGetPlayersStatistics>(
-        "/players/statistics"
-      )
+      const storage = await AsyncStorage.getItem(storageKey)
 
-      const formatStatistics: ValueTable[] = response.data.players.map(
-        (player) => {
-          const {
-            numberOfMatchesWon,
-            numberOfMatchesLose,
-            numberOfMatchesWonPerCapote,
-            numberOfMatchesLosePerCapote,
-            numberOfMatchesLosePerSuicide,
-            points,
-          } = player.statistics
+      if (!storage) {
+        throw new Error("Não foi possível buscar os dados do storage")
+      }
 
-          const firstLetterPlayerName = player.name.charAt(0).toUpperCase()
+      const matchesStorage = JSON.parse(storage)
 
-          return [
-            <AvatarContent slugAvatar={player.slugAvatar}>
-              <AvatarLetter>{firstLetterPlayerName}</AvatarLetter>
-            </AvatarContent>,
-            numberOfMatchesWon,
-            numberOfMatchesLose,
-            numberOfMatchesWonPerCapote,
-            numberOfMatchesLosePerCapote,
-            numberOfMatchesLosePerSuicide,
-            points,
-          ]
+      const formatPlayers = [...players].map((player) => {
+        const filterMatches = matchesStorage
+          .map((match: MatchesByUniqueDateLocal) => {
+            return match.playersIds.includes(player.id)
+              ? {
+                  matchId: match.id,
+                  playerId: player.id,
+                  match: {
+                    id: match.id,
+                    isCapote: match.isCapote,
+                    isSuicide: match.isSuicide,
+                    createdAt: match.createdAt,
+                    winnerPlayerId: match.winnerPlayerId,
+                  },
+                }
+              : null
+          })
+          .filter(Boolean)
+
+        return {
+          ...player,
+          matches: filterMatches,
         }
+      })
+
+      const calculatePlayers = formatPlayers.map((player) =>
+        calculatePlayersStatistics(player)
       )
 
-      setPlayersStatistics(formatStatistics)
+      console.log("----------------------------------")
+      console.log("FORMAT", JSON.stringify(formatPlayers, null, 2))
+      console.log("calculatePlayers", JSON.stringify(calculatePlayers, null, 2))
+
+      // const formatStatistics: ValueTable[] = calculatePlayers.map((player) => {
+      //   const {
+      //     numberOfMatchesWon,
+      //     numberOfMatchesLose,
+      //     numberOfMatchesWonPerCapote,
+      //     numberOfMatchesLosePerCapote,
+      //     numberOfMatchesLosePerSuicide,
+      //     points,
+      //   } = player.statistics
+
+      //   const firstLetterPlayerName = player.name.charAt(0).toUpperCase()
+
+      //   return [
+      //     <AvatarContent slugAvatar={player.slugAvatar}>
+      //       <AvatarLetter>{firstLetterPlayerName}</AvatarLetter>
+      //     </AvatarContent>,
+      //     numberOfMatchesWon,
+      //     numberOfMatchesLose,
+      //     numberOfMatchesWonPerCapote,
+      //     numberOfMatchesLosePerCapote,
+      //     numberOfMatchesLosePerSuicide,
+      //     points,
+      //   ]
+      // })
+
+      // setPlayersStatistics(formatStatistics)
+      setPlayersStatistics([])
     } catch (err) {
-      showToast.error("Não foi possível carregar a lista das partidas")
+      let message = "Não foi possível carregar a lista das partidas"
+
+      if (err instanceof Error) {
+        message = err.message
+      }
+
+      showToast.error(message)
     } finally {
       setLoadingPlayersStatistics(false)
     }
@@ -93,7 +140,7 @@ export function Statistics() {
   }
 
   useEffect(() => {
-    onGetPlayersStatistics()
+    // onGetPlayersStatistics()
   }, [])
 
   return (
@@ -150,6 +197,11 @@ export function Statistics() {
               </Line>
             )
           })}
+
+          <MessageNotFound
+            message="Nenhuma estatística encontrada"
+            onTryAgain={onTryGetListPlayersAgain}
+          />
         </Table>
       )}
     </Container>
