@@ -18,6 +18,10 @@ export interface MatchesByUniqueDate extends MatchDTO {
   players: PlayerMatchDTO[]
 }
 
+export interface MatchesNormalByUniqueDateLocal extends MatchDTO {
+  players: PlayerDTO[]
+}
+
 export interface MatchesByUniqueDateLocal extends MatchDTO {
   playersIds: string[]
 }

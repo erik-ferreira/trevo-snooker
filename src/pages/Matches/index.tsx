@@ -6,7 +6,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage"
 import { players } from "@/defaults/players"
 import { storageKey } from "@/constants/storage"
 
-import { MatchesByUniqueDate, MatchesByUniqueDateLocal } from "@/dtos/MatchDTO"
+import {
+  MatchesByUniqueDate,
+  MatchesByUniqueDateLocal,
+  MatchesNormalByUniqueDateLocal,
+} from "@/dtos/MatchDTO"
 
 import { Option } from "@/components/Option"
 import { Divider } from "@/components/Divider"
@@ -40,7 +44,7 @@ export function Matches() {
   const { date } = route.params as RouteProps
 
   const [loadingMatches, setLoadingMatches] = useState(false)
-  const [matches, setMatches] = useState<MatchesByUniqueDate[]>([])
+  const [matches, setMatches] = useState<MatchesNormalByUniqueDateLocal[]>([])
 
   async function onGetListMatches() {
     try {
@@ -63,14 +67,11 @@ export function Matches() {
 
       const matchesStorage = JSON.parse(storage) as MatchesByUniqueDateLocal[]
 
-      const formatMatches: MatchesByUniqueDate[] = matchesStorage.map(
-        (match) => ({
+      const formatMatches: MatchesNormalByUniqueDateLocal[] =
+        matchesStorage.map((match) => ({
           ...match,
           players: match.playersIds.map((playerId) => formatPlayers[playerId]),
-        })
-      )
-
-      // console.log("formatMatches", JSON.stringify(formatMatches, null, 2))
+        }))
 
       setMatches(formatMatches)
     } catch (err) {
@@ -109,19 +110,19 @@ export function Matches() {
 
                 <MatchContentPlayers>
                   <PlayerOfTheMatch
-                    player={playerOne.player}
+                    player={playerOne}
                     variant="playerOne"
                     isReadOnly
-                    isWinner={item.winnerPlayerId === playerOne.playerId}
+                    isWinner={item.winnerPlayerId === playerOne.id}
                   />
 
                   <Image source={vs} width={50} />
 
                   <PlayerOfTheMatch
-                    player={playerTwo.player}
+                    player={playerTwo}
                     variant="playerTwo"
                     isReadOnly
-                    isWinner={item.winnerPlayerId === playerTwo.playerId}
+                    isWinner={item.winnerPlayerId === playerTwo.id}
                   />
                 </MatchContentPlayers>
 

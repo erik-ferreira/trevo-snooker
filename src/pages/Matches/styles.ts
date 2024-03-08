@@ -1,7 +1,10 @@
 import styled from "styled-components/native"
 import { FlatListProps } from "react-native"
 
-import { MatchesByUniqueDate } from "@/dtos/MatchDTO"
+import {
+  MatchesByUniqueDate,
+  MatchesNormalByUniqueDateLocal,
+} from "@/dtos/MatchDTO"
 
 export const Container = styled.SafeAreaView`
   flex: 1;
@@ -16,7 +19,7 @@ export const ContentListMatches = styled.FlatList.attrs(() => ({
     paddingVertical: 32,
     paddingHorizontal: 24,
   },
-}))<FlatListProps<MatchesByUniqueDate>>``
+}))<FlatListProps<MatchesNormalByUniqueDateLocal>>``
 
 export const MatchContent = styled.View`
   padding: 8px;
