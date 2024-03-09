@@ -1,13 +1,14 @@
-import styled from "styled-components/native"
+import styled, { css } from "styled-components/native"
 
 export interface ButtonContainerProps {
   variant?: "primary" | "secondary"
+  isFullWidth?: boolean
 }
 
 export const ButtonContainer = styled.TouchableOpacity.attrs(() => ({
   activeOpacity: 0.7,
 }))<ButtonContainerProps>`
-  width: ${(props) => (props.variant === "primary" ? `100%` : "fit-content")};
+  width: ${(props) => (props.isFullWidth ? `100%` : "fit-content")};
   border-radius: 4px;
   padding: 12px 16px;
   background-color: ${(props) =>

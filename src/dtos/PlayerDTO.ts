@@ -32,7 +32,7 @@ export interface PlayerStorageProps extends PlayerDTO {
   matches: MatchesProps
 }
 
-interface Statistics {
+export interface Statistics {
   numberOfMatchesWon: number
   numberOfMatchesLose: number
   numberOfMatchesWonPerNormal: number

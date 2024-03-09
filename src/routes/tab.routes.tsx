@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 
 import { Home } from "@/pages/Home"
 import { History } from "@/pages/History"
+import { Settings } from "@/pages/Settings"
 import { Statistics } from "@/pages/Statistics"
 
 import { Icon } from "@/components/Icon"
@@ -63,6 +64,16 @@ export function TabRoutes() {
           headerTitle: "Estatísticas",
           tabBarIcon: ({ size, color }) => {
             return <Icon name="LineChart" size={size} color={color} />
+          },
+        }}
+      />
+      <Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          headerTitle: "Configurações",
+          tabBarIcon: ({ size, color }) => {
+            return <Icon name="Settings" size={size} color={color} />
           },
         }}
       />

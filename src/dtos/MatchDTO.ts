@@ -29,3 +29,14 @@ export interface MatchesByUniqueDateLocal extends MatchDTO {
 export type MatchesDates = Pick<MatchDTO, "id" | "createdAt">
 
 export type OptionMatchProps = "isCapote" | "isSuicide" | null
+
+export type ValueTable = [
+  JSX.Element,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number
+]

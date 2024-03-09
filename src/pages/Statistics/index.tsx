@@ -9,7 +9,7 @@ import { Icon } from "@/components/Icon"
 import { LoadingSpinner } from "@/components/LoadingSpinner"
 import { MessageNotFound } from "@/components/MessageNotFound"
 
-import { MatchesByUniqueDateLocal } from "@/dtos/MatchDTO"
+import { MatchesByUniqueDateLocal, ValueTable } from "@/dtos/MatchDTO"
 
 import { showToast } from "@/utils/showToast"
 import { calculatePlayersStatistics } from "@/utils/calculatePlayersStatistics"
@@ -26,17 +26,6 @@ import {
   AvatarContent,
   AvatarLetter,
 } from "./styles"
-
-type ValueTable = [
-  JSX.Element,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number,
-  number
-]
 
 export function Statistics() {
   const { colors } = useTheme()

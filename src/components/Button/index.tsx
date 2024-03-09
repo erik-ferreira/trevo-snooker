@@ -17,10 +17,11 @@ export function Button({
   label = "Salvar",
   loading = false,
   variant = "primary",
+  isFullWidth = true,
   ...rest
 }: ButtonProps) {
   return (
-    <ButtonContainer variant={variant} {...rest}>
+    <ButtonContainer variant={variant} isFullWidth={isFullWidth} {...rest}>
       {loading ? (
         <LoadingSpinner variant="secondary" />
       ) : (

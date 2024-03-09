@@ -19,6 +19,7 @@ export function MessageNotFound({
       <Message>{message}</Message>
       <Button
         variant="secondary"
+        isFullWidth={false}
         label="Tentar novamente"
         onPress={onTryAgain}
       />
