@@ -1,14 +1,14 @@
 import { PlayerStorageProps, ReturnPlayersStatistics } from "@/dtos/PlayerDTO"
 
 export function calculatePlayersStatistics(
-  prismaPlayer: PlayerStorageProps
+  playerStorage: PlayerStorageProps
 ): ReturnPlayersStatistics {
-  const statistics = prismaPlayer.matches.reduce(
+  const statistics = playerStorage.matches.reduce(
     (acc, current) => {
-      const isPlayerWinner = current.match.winnerPlayerId === prismaPlayer.id
+      const isPlayerWinner = current.match.winnerPlayerId === playerStorage.id
       const isCapote = current.match.isCapote
       const isSuicide = current.match.isSuicide
-      const isMatchNormal = !current.match.isSuicide && !current.match.isSuicide
+      const isMatchNormal = !current.match.isSuicide && !current.match.isCapote
 
       if (isPlayerWinner) {
         acc.numberOfMatchesWon++
@@ -52,10 +52,10 @@ export function calculatePlayersStatistics(
   points = points < 0 ? 0 : points
 
   return {
-    id: prismaPlayer.id,
-    name: prismaPlayer.name,
-    slugAvatar: prismaPlayer.slugAvatar,
-    createdAt: prismaPlayer.createdAt,
+    id: playerStorage.id,
+    name: playerStorage.name,
+    slugAvatar: playerStorage.slugAvatar,
+    createdAt: playerStorage.createdAt,
     statistics: { ...statistics, points },
   }
 }

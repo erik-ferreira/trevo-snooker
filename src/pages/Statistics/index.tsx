@@ -91,37 +91,32 @@ export function Statistics() {
         calculatePlayersStatistics(player)
       )
 
-      console.log("----------------------------------")
-      console.log("FORMAT", JSON.stringify(formatPlayers, null, 2))
-      console.log("calculatePlayers", JSON.stringify(calculatePlayers, null, 2))
+      const playerFormatted: ValueTable[] = calculatePlayers.map((player) => {
+        const {
+          numberOfMatchesWon,
+          numberOfMatchesLose,
+          numberOfMatchesWonPerCapote,
+          numberOfMatchesLosePerCapote,
+          numberOfMatchesLosePerSuicide,
+          points,
+        } = player.statistics
 
-      // const formatStatistics: ValueTable[] = calculatePlayers.map((player) => {
-      //   const {
-      //     numberOfMatchesWon,
-      //     numberOfMatchesLose,
-      //     numberOfMatchesWonPerCapote,
-      //     numberOfMatchesLosePerCapote,
-      //     numberOfMatchesLosePerSuicide,
-      //     points,
-      //   } = player.statistics
+        const firstLetterPlayerName = player.name.charAt(0).toUpperCase()
 
-      //   const firstLetterPlayerName = player.name.charAt(0).toUpperCase()
+        return [
+          <AvatarContent slugAvatar={player.slugAvatar}>
+            <AvatarLetter>{firstLetterPlayerName}</AvatarLetter>
+          </AvatarContent>,
+          numberOfMatchesWon,
+          numberOfMatchesLose,
+          numberOfMatchesWonPerCapote,
+          numberOfMatchesLosePerCapote,
+          numberOfMatchesLosePerSuicide,
+          points,
+        ]
+      })
 
-      //   return [
-      //     <AvatarContent slugAvatar={player.slugAvatar}>
-      //       <AvatarLetter>{firstLetterPlayerName}</AvatarLetter>
-      //     </AvatarContent>,
-      //     numberOfMatchesWon,
-      //     numberOfMatchesLose,
-      //     numberOfMatchesWonPerCapote,
-      //     numberOfMatchesLosePerCapote,
-      //     numberOfMatchesLosePerSuicide,
-      //     points,
-      //   ]
-      // })
-
-      // setPlayersStatistics(formatStatistics)
-      setPlayersStatistics([])
+      setPlayersStatistics(playerFormatted)
     } catch (err) {
       let message = "Não foi possível carregar a lista das partidas"
 
@@ -197,11 +192,6 @@ export function Statistics() {
               </Line>
             )
           })}
-
-          <MessageNotFound
-            message="Nenhuma estatística encontrada"
-            onTryAgain={onTryGetListPlayersAgain}
-          />
         </Table>
       )}
     </Container>
