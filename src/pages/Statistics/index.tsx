@@ -1,9 +1,7 @@
-import { View } from "react-native"
 import { useState, useEffect, JSX } from "react"
 import { useTheme } from "styled-components/native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
-import { api } from "@/services/api"
 import { players } from "@/defaults/players"
 import { storageKey } from "@/constants/storage"
 
@@ -11,10 +9,10 @@ import { Icon } from "@/components/Icon"
 import { LoadingSpinner } from "@/components/LoadingSpinner"
 import { MessageNotFound } from "@/components/MessageNotFound"
 
-import { PlayerStatisticsProps } from "@/dtos/PlayerDTO"
 import { MatchesByUniqueDateLocal } from "@/dtos/MatchDTO"
 
 import { showToast } from "@/utils/showToast"
+import { calculatePlayersStatistics } from "@/utils/calculatePlayersStatistics"
 
 import {
   Container,
@@ -28,13 +26,17 @@ import {
   AvatarContent,
   AvatarLetter,
 } from "./styles"
-import { calculatePlayersStatistics } from "@/utils/calculatePlayersStatistics"
 
-type ValueTable = [JSX.Element, number, number, number, number, number, number]
-
-interface ReturnGetPlayersStatistics {
-  players: PlayerStatisticsProps[]
-}
+type ValueTable = [
+  JSX.Element,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number,
+  number
+]
 
 export function Statistics() {
   const { colors } = useTheme()
@@ -45,7 +47,7 @@ export function Statistics() {
   const isSelectedHorizontal = previewMode === "horizontal"
   const isSelectedVertical = previewMode === "vertical"
 
-  const tableHeader = ["F", "V", "D", "CF", "CS", "S", "P"]
+  const tableHeader = ["F", "V", "D", "VC", "DC", "VS", "DS", "P"]
   const [loadingPlayersStatistics, setLoadingPlayersStatistics] =
     useState(false)
   const [playersStatistics, setPlayersStatistics] = useState<ValueTable[]>([])
@@ -97,6 +99,7 @@ export function Statistics() {
           numberOfMatchesLose,
           numberOfMatchesWonPerCapote,
           numberOfMatchesLosePerCapote,
+          numberOfMatchesWonPerSuicide,
           numberOfMatchesLosePerSuicide,
           points,
         } = player.statistics
@@ -111,6 +114,7 @@ export function Statistics() {
           numberOfMatchesLose,
           numberOfMatchesWonPerCapote,
           numberOfMatchesLosePerCapote,
+          numberOfMatchesWonPerSuicide,
           numberOfMatchesLosePerSuicide,
           points,
         ]
@@ -135,7 +139,7 @@ export function Statistics() {
   }
 
   useEffect(() => {
-    // onGetPlayersStatistics()
+    onGetPlayersStatistics()
   }, [])
 
   return (

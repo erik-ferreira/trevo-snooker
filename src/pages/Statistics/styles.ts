@@ -66,8 +66,8 @@ interface BoxProps {
 }
 
 export const Box = styled.View<BoxProps>`
-  width: 50px;
-  height: 40px;
+  width: 45px;
+  height: 35px;
   background-color: ${(props) =>
     props.isHead ? props.theme.colors.gray[800] : props.theme.colors.gray[900]};
 
@@ -93,8 +93,8 @@ interface AvatarContentProps {
 }
 
 export const AvatarContent = styled.View<AvatarContentProps>`
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 12px;
   background-color: ${(props) => colorsAvatar[props.slugAvatar as SourceName]};
   align-items: center;
