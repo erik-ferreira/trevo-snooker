@@ -139,8 +139,8 @@ export function Settings() {
     }
   }
 
-  function handleGenerateFile() {
-    onGetPlayersStatistics()
+  async function handleGenerateFile() {
+    await onGetPlayersStatistics()
 
     // playersStatistics.map((player) => {
     //   return [
@@ -163,15 +163,15 @@ export function Settings() {
         "Jogador",
         "Vitórias",
         "Derrotas",
-        "Vitórias nomais",
-        "Derrotas nomais",
+        "Vitórias normais",
+        "Derrotas normais",
         "Vitórias capote",
         "Derrotas capote",
         "Vitórias suicídio",
         "Derrotas suicídio",
         "Pontos",
       ],
-      ["Erik", 1, 15, 1, 1, 2, 1, 1, 0, 25],
+      ...playersStatistics,
     ])
 
     // numberOfMatchesWon,
