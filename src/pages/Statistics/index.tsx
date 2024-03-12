@@ -6,6 +6,7 @@ import { players } from "@/defaults/players"
 import { storageKey } from "@/constants/storage"
 
 import { Icon } from "@/components/Icon"
+import { Button } from "@/components/Button"
 import { LoadingSpinner } from "@/components/LoadingSpinner"
 import { MessageNotFound } from "@/components/MessageNotFound"
 
@@ -41,14 +42,19 @@ export function Statistics() {
     useState(false)
   const [playersStatistics, setPlayersStatistics] = useState<ValueTable[]>([])
 
-  async function onGetPlayersStatistics() {
+  async function onGetPlayersStatistics(isReload = false) {
     try {
       setLoadingPlayersStatistics(true)
 
       const storage = await AsyncStorage.getItem(storageKey)
 
       if (!storage) {
-        throw new Error("Não foi possível buscar os dados do storage")
+        if (isReload) {
+          // throw new Error("Você ainda não possui partidas cadastradas")
+          showToast.info("Você ainda não possui partidas cadastradas")
+        }
+
+        return
       }
 
       const matchesStorage = JSON.parse(storage)
@@ -111,20 +117,17 @@ export function Statistics() {
 
       setPlayersStatistics(playerFormatted)
     } catch (err) {
-      let message = "Não foi possível carregar a lista das partidas"
-
-      if (err instanceof Error) {
-        message = err.message
-      }
-
-      showToast.error(message)
+      showToast.info("Não foi possível carregar a lista das partidas")
+      setPlayersStatistics([])
     } finally {
+      await new Promise((resolve) => setTimeout(resolve, 1200))
+
       setLoadingPlayersStatistics(false)
     }
   }
 
   async function onTryGetListPlayersAgain() {
-    onGetPlayersStatistics()
+    onGetPlayersStatistics(true)
   }
 
   useEffect(() => {
@@ -161,31 +164,35 @@ export function Statistics() {
           onTryAgain={onTryGetListPlayersAgain}
         />
       ) : (
-        <Table direction={previewMode}>
-          <Line direction={previewMode}>
-            {tableHeader.map((item) => (
-              <Box key={item} isHead>
-                <InfoBox>{item}</InfoBox>
-              </Box>
-            ))}
-          </Line>
+        <>
+          <Table direction={previewMode}>
+            <Line direction={previewMode}>
+              {tableHeader.map((item) => (
+                <Box key={item} isHead>
+                  <InfoBox>{item}</InfoBox>
+                </Box>
+              ))}
+            </Line>
 
-          {playersStatistics.map((player, index) => {
-            return (
-              <Line key={index} direction={previewMode}>
-                {player.map((stats, index) => (
-                  <Box key={index}>
-                    {typeof stats === "number" ? (
-                      <InfoBox>{stats}</InfoBox>
-                    ) : (
-                      stats
-                    )}
-                  </Box>
-                ))}
-              </Line>
-            )
-          })}
-        </Table>
+            {playersStatistics.map((player, index) => {
+              return (
+                <Line key={index} direction={previewMode}>
+                  {player.map((stats, index) => (
+                    <Box key={index}>
+                      {typeof stats === "number" ? (
+                        <InfoBox>{stats}</InfoBox>
+                      ) : (
+                        stats
+                      )}
+                    </Box>
+                  ))}
+                </Line>
+              )
+            })}
+          </Table>
+
+          <Button label="Recarregar" onPress={onTryGetListPlayersAgain} />
+        </>
       )}
     </Container>
   )

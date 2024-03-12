@@ -19,6 +19,12 @@ export const ButtonContainer = styled.TouchableOpacity.attrs(() => ({
   display: flex;
   align-items: center;
   justify-content: center;
+
+  ${(props) =>
+    props.disabled &&
+    css`
+      opacity: 0.6;
+    `}
 `
 export const TextButtonContainer = styled.Text`
   font-size: 18px;

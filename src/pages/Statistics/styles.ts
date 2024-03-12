@@ -54,6 +54,7 @@ interface TableAndLineProps {
 export const Table = styled.View<TableAndLineProps>`
   flex-direction: ${(props) =>
     props.direction === "horizontal" ? "column" : "row"};
+  margin-bottom: 24px;
 `
 
 export const Line = styled.View<TableAndLineProps>`

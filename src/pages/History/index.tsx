@@ -46,7 +46,11 @@ export function History() {
       const storage = await AsyncStorage.getItem(storageKey)
 
       if (!storage) {
-        return showToast.info("Você ainda não possui partidas salvas")
+        if (!refresh) {
+          showToast.info("Você ainda não possui partidas salvas")
+        }
+
+        return
       }
 
       if (refresh) {
@@ -72,6 +76,8 @@ export function History() {
     } catch (err) {
       showToast.error("Não foi possível carregar a lista das datas de partidas")
     } finally {
+      await new Promise((resolve) => setTimeout(resolve, 1200))
+
       if (refresh) {
         setRefreshMatchesDates(false)
       } else {

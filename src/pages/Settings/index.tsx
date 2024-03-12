@@ -1,6 +1,5 @@
 import * as XLSX from "xlsx"
 import { useState } from "react"
-import { View } from "react-native"
 import Modal from "react-native-modal"
 import * as Sharing from "expo-sharing"
 import * as FileSystem from "expo-file-system"
@@ -11,7 +10,6 @@ import { storageKey } from "@/constants/storage"
 
 import { Button } from "@/components/Button"
 
-import { StatisticsDTO } from "@/dtos/StatisticsDTO"
 import { MatchesByUniqueDateLocal } from "@/dtos/MatchDTO"
 
 import { showToast } from "@/utils/showToast"
@@ -59,6 +57,7 @@ export function Settings() {
     showToast.info("O storage foi limpo com sucesso!")
   }
 
+  const [loadingStatistics, setLoadingStatistics] = useState(false)
   const [playersStatistics, setPlayersStatistics] = useState<ValueTable[]>([])
 
   async function onGetPlayersStatistics() {
@@ -66,8 +65,11 @@ export function Settings() {
       const storage = await AsyncStorage.getItem(storageKey)
 
       if (!storage) {
-        throw new Error("Não foi possível buscar os dados do storage")
+        showToast.info("Não foi possível buscar os dados do storage")
+
+        return
       }
+      setLoadingStatistics(true)
 
       const matchesStorage = JSON.parse(storage)
 
@@ -129,36 +131,20 @@ export function Settings() {
 
       setPlayersStatistics(playerFormatted)
     } catch (err) {
-      let message = "Não foi possível carregar a lista das partidas"
+      showToast.error("Não foi possível carregar a lista das partidas")
 
-      if (err instanceof Error) {
-        message = err.message
-      }
+      setPlayersStatistics([])
+    } finally {
+      await new Promise((resolve) => setTimeout(resolve, 1200))
 
-      showToast.error(message)
+      setLoadingStatistics(false)
     }
   }
 
   async function handleGenerateFile() {
-    await onGetPlayersStatistics()
-
-    // playersStatistics.map((player) => {
-    //   return [
-    //     player[0],
-    //     player[1],
-    //     player[2],
-    //     player[3],
-    //     player[4],
-    //     player[5],
-    //     player[6],
-    //     player[7],
-    //     player[8],
-    //     player[9],
-    //   ]
-    // })
-
     const wb = XLSX.utils.book_new()
-    const ws = XLSX.utils.aoa_to_sheet([
+
+    const rows: unknown[][] = [
       [
         "Jogador",
         "Vitórias",
@@ -171,23 +157,31 @@ export function Settings() {
         "Derrotas suicídio",
         "Pontos",
       ],
-      ...playersStatistics,
-    ])
+    ]
 
-    // numberOfMatchesWon,
-    // numberOfMatchesLose,
-    // numberOfMatchesWonPerNormal,
-    // numberOfMatchesLosePerNormal,
-    // numberOfMatchesWonPerCapote,
-    // numberOfMatchesLosePerCapote,
-    // numberOfMatchesWonPerSuicide,
-    // numberOfMatchesLosePerSuicide,
-    // points,
+    if (playersStatistics) {
+      rows.push(...playersStatistics)
+    }
+
+    const ws = XLSX.utils.aoa_to_sheet(rows)
+
+    ws["!cols"] = [
+      { wch: 16 },
+      { wch: 10 },
+      { wch: 10 },
+      { wch: 14 },
+      { wch: 14 },
+      { wch: 14 },
+      { wch: 14 },
+      { wch: 14 },
+      { wch: 14 },
+      { wch: 8 },
+    ]
 
     XLSX.utils.book_append_sheet(wb, ws, "SheetJS", true)
 
     const base64 = XLSX.write(wb, { type: "base64" })
-    const filename = FileSystem.documentDirectory + "teste.xlsx"
+    const filename = FileSystem.documentDirectory + "statistics.xlsx"
 
     FileSystem.writeAsStringAsync(filename, base64, {
       encoding: FileSystem.EncodingType.Base64,
@@ -199,7 +193,16 @@ export function Settings() {
   return (
     <Container>
       <Button label="Limpar storage" onPress={requestConfirmClearStorage} />
-      <Button label="Gerar arquivo" onPress={handleGenerateFile} />
+      <Button
+        label="Gerar dados"
+        onPress={onGetPlayersStatistics}
+        loading={loadingStatistics}
+      />
+      <Button
+        label="Compartilhar arquivo"
+        onPress={handleGenerateFile}
+        disabled={playersStatistics?.length <= 0 || loadingStatistics}
+      />
 
       <Modal
         isVisible={modalIsVisible}
