@@ -21,7 +21,9 @@ export const ContentListMatches = styled.FlatList.attrs(() => ({
   },
 }))<FlatListProps<MatchesNormalByUniqueDateLocal>>``
 
-export const MatchContent = styled.View`
+export const MatchContent = styled.TouchableOpacity.attrs({
+  activeOpacity: 0.7,
+})`
   padding: 8px;
 
   gap: 8px;

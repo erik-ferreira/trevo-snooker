@@ -1,4 +1,5 @@
 import { Image } from "react-native"
+import Modal from "react-native-modal"
 import { useEffect, useState } from "react"
 import { useRoute } from "@react-navigation/native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
@@ -12,6 +13,7 @@ import {
   MatchesNormalByUniqueDateLocal,
 } from "@/dtos/MatchDTO"
 
+import { Button } from "@/components/Button"
 import { Option } from "@/components/Option"
 import { Divider } from "@/components/Divider"
 import { LoadingSpinner } from "@/components/LoadingSpinner"
@@ -31,6 +33,15 @@ import {
   MatchContentOptions,
 } from "./styles"
 
+import {
+  modalStyle,
+  ModalContent,
+  ModalPicker,
+  ModalHeader,
+  ModalMessage,
+  ContentButtons,
+} from "../Settings/styles"
+
 interface RouteProps {
   date: string
 }
@@ -43,8 +54,12 @@ export function Matches() {
   const route = useRoute()
   const { date } = route.params as RouteProps
 
+  const [modalIsVisible, setModalIsVisible] = useState(false)
+
   const [loadingMatches, setLoadingMatches] = useState(false)
   const [matches, setMatches] = useState<MatchesNormalByUniqueDateLocal[]>([])
+
+  const [matchIdToDelete, setMatchIdToDelete] = useState<null | string>(null)
 
   async function onGetListMatches() {
     try {
@@ -87,6 +102,42 @@ export function Matches() {
     }
   }
 
+  function handleOpenModal(matchId: string) {
+    setMatchIdToDelete(matchId)
+
+    setModalIsVisible(true)
+  }
+
+  function handleCloseModal() {
+    setModalIsVisible(false)
+  }
+
+  async function handleDeleteMatch() {
+    if (!matchIdToDelete) {
+      return showToast.info(
+        "Não foi possível excluir a partida, tente novamente mais tarde"
+      )
+    }
+
+    const storage = await AsyncStorage.getItem(storageKey)
+
+    if (!storage) {
+      return showToast.info("Não foi possível buscar a partida do storage")
+    }
+
+    const matchesStorage = JSON.parse(storage) as MatchesByUniqueDateLocal[]
+
+    const filterMatches = matchesStorage.filter(
+      (match) => match.id !== matchIdToDelete
+    )
+
+    await AsyncStorage.setItem(storageKey, JSON.stringify(filterMatches))
+
+    handleCloseModal()
+
+    onGetListMatches()
+  }
+
   useEffect(() => {
     onGetListMatches()
   }, [])
@@ -98,47 +149,87 @@ export function Matches() {
       ) : matches.length === 0 ? (
         <MessageNotFound message="Nenhuma partida encontrada" />
       ) : (
-        <ContentListMatches
-          data={matches}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => {
-            const [playerOne, playerTwo] = item.players
+        <>
+          <ContentListMatches
+            data={matches}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => {
+              const [playerOne, playerTwo] = item.players
 
-            return (
-              <MatchContent key={item?.id}>
-                <MatchNumber>{index + 1}º partida</MatchNumber>
+              return (
+                <MatchContent
+                  key={item?.id}
+                  onPress={() => handleOpenModal(item.id)}
+                >
+                  <MatchNumber>{index + 1}º partida</MatchNumber>
 
-                <MatchContentPlayers>
-                  <PlayerOfTheMatch
-                    player={playerOne}
-                    variant="playerOne"
-                    isReadOnly
-                    isWinner={item.winnerPlayerId === playerOne.id}
-                  />
+                  <MatchContentPlayers>
+                    <PlayerOfTheMatch
+                      player={playerOne}
+                      variant="playerOne"
+                      isReadOnly
+                      isWinner={item.winnerPlayerId === playerOne.id}
+                    />
 
-                  <Image source={vs} width={50} />
+                    <Image source={vs} width={50} />
 
-                  <PlayerOfTheMatch
-                    player={playerTwo}
-                    variant="playerTwo"
-                    isReadOnly
-                    isWinner={item.winnerPlayerId === playerTwo.id}
-                  />
-                </MatchContentPlayers>
+                    <PlayerOfTheMatch
+                      player={playerTwo}
+                      variant="playerTwo"
+                      isReadOnly
+                      isWinner={item.winnerPlayerId === playerTwo.id}
+                    />
+                  </MatchContentPlayers>
 
-                <MatchContentOptions>
-                  <Option label="Capote" isChecked={item.isCapote} disabled />
-                  <Option
-                    label="Suicídio"
-                    isChecked={item.isSuicide}
-                    disabled
-                  />
-                </MatchContentOptions>
-              </MatchContent>
-            )
-          }}
-          ItemSeparatorComponent={Divider}
-        />
+                  <MatchContentOptions>
+                    <Option label="Capote" isChecked={item.isCapote} disabled />
+                    <Option
+                      label="Suicídio"
+                      isChecked={item.isSuicide}
+                      disabled
+                    />
+                  </MatchContentOptions>
+                </MatchContent>
+              )
+            }}
+            ItemSeparatorComponent={Divider}
+          />
+
+          <Modal
+            isVisible={modalIsVisible}
+            onSwipeComplete={handleCloseModal}
+            onBackButtonPress={handleCloseModal}
+            onBackdropPress={handleCloseModal}
+            style={modalStyle}
+            statusBarTranslucent
+            swipeDirection={["down"]}
+            propagateSwipe
+          >
+            <ModalContent>
+              <ModalPicker />
+
+              <ModalHeader>
+                <ModalMessage>
+                  Você tem certeza que deseja excluir a partida?
+                </ModalMessage>
+              </ModalHeader>
+
+              <ContentButtons>
+                <Button
+                  label="Não"
+                  variant="secondary"
+                  isFullWidth={false}
+                  onPress={handleCloseModal}
+                />
+                <Button
+                  label="Sim"
+                  isFullWidth={false}
+                  onPress={handleDeleteMatch}
+                />
+              </ContentButtons>
+            </ModalContent>
+          </Modal>
+        </>
       )}
     </Container>
   )
