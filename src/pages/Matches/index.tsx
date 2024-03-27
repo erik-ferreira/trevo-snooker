@@ -21,6 +21,7 @@ import { MessageNotFound } from "@/components/MessageNotFound"
 import { PlayerOfTheMatch } from "@/components/PlayerOfTheMatch"
 
 import { showToast } from "@/utils/showToast"
+import { formatDate } from "@/utils/formatDate"
 
 import vs from "@/assets/vs.png"
 
@@ -86,9 +87,14 @@ export function Matches() {
         matchesStorage.map((match) => ({
           ...match,
           players: match.playersIds.map((playerId) => formatPlayers[playerId]),
+          createdAt: formatDate(match.createdAt, true),
         }))
 
-      setMatches(formatMatches)
+      const filteredMatches = formatMatches.filter(
+        (match) => match.createdAt === date
+      )
+
+      setMatches(filteredMatches)
     } catch (err) {
       let message = "Não foi possível carregar a lista das partidas"
 
