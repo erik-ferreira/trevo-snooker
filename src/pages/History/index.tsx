@@ -1,4 +1,5 @@
 import { format } from "date-fns"
+import { ptBR } from "date-fns/locale"
 import uuid from "react-native-uuid"
 import { useEffect, useState } from "react"
 import { RefreshControl } from "react-native"
@@ -16,6 +17,7 @@ import { LoadingSpinner } from "@/components/LoadingSpinner"
 import { MessageNotFound } from "@/components/MessageNotFound"
 
 import { showToast } from "@/utils/showToast"
+import { formatDate } from "@/utils/formatDate"
 
 import {
   Container,
@@ -69,7 +71,7 @@ export function History() {
         new Set(convertMatches)
       ).map((date) => ({
         id: uuid.v4() as string,
-        createdAt: format(new Date(date), "dd/MM/yyyy"),
+        createdAt: formatDate(date),
       }))
 
       setMatchesDates(formatMatches)
