@@ -122,21 +122,16 @@ export function Home() {
       }
 
       const createdAt = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-      // const newCreatedAt = "2024-03-26T23:11:33.381Z"
-      const newCreatedAt = "2024-03-28T23:11:33.381Z"
       const newMatch: MatchesByUniqueDateLocal = {
         id: uuid.v4() as string,
         isCapote: optionMatch === "isCapote",
         isSuicide: optionMatch === "isSuicide",
         playersIds: [playerOne.id, playerTwo.id],
         winnerPlayerId,
-        createdAt: newCreatedAt,
+        createdAt,
       }
 
       matches = [...matches, newMatch]
-
-      console.log("createdAt", createdAt)
-      console.log("matches", JSON.stringify(matches, null, 2))
 
       // save match
       await AsyncStorage.setItem(storageKey, JSON.stringify(matches))
